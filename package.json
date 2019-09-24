@@ -30,6 +30,8 @@
   "eslint-plugin-react": "^7.14.3",
   "eslint-plugin-react-hooks": "^2.0.1",
   "html-webpack-plugin": "^3.2.0",
+  "husky": ">=1",
+  "lint-staged": ">=8",
   "nodemon": "^1.19.2",
   "postcss-loader": "^3.0.0",
   "prop-types": "^15.7.2",
@@ -42,7 +44,18 @@
  "scripts": {
   "client:dev": "webpack-dev-server --open --config webpack.dev.js",
   "client:prod": "webpack --config webpack.prod.js",
-  "server:dev": "NODE_ENV=development nodemon server/index.js",
+  "server:dev": "NODE_ENV=development nodemon server/index.js --exec 'eslint --fix server && node'",
   "server:prod": "NODE_ENV=production node server/index.js"
+ },
+ "husky": {
+  "hooks": {
+   "pre-commit": "lint-staged"
+  }
+ },
+ "lint-staged": {
+  "*.js": [
+   "eslint --fix",
+   "git add"
+  ]
  }
 }
