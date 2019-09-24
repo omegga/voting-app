@@ -18,7 +18,8 @@ module.exports = {
 		"sourceType": "module"
 	},
 	"plugins": [
-		"react"
+		"react",
+		"react-hooks"
 	],
 	"rules": {
 		"indent": [
@@ -36,6 +37,8 @@ module.exports = {
 		"semi": [
 			"error",
 			"always"
-		]
+		],
+		"react-hooks/rules-of-hooks": "error",
+		"react-hooks/exhaustive-deps": "warn"
 	}
 };
