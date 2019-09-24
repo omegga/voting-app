@@ -9,7 +9,10 @@ module.exports = {
     filename: "bundle.js"
   },
   resolve: {
-    extensions: [".js"]
+		extensions: [".js"],
+		alias: {
+			'react-dom': '@hot-loader/react-dom'
+		}
   },
   module: {
     rules: [
