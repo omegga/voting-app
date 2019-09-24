@@ -1,0 +1,10 @@
+{
+  "name": "voting-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+	"license": "MIT",
+	"engines": {
+		"node": "12.10.0"
+	}
+}
