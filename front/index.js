@@ -1,9 +1,19 @@
-import './index.css';
-import React from 'react';
-import { render } from 'react-dom';
+// @flow
+
+import "./index.css";
+import React from "react";
+import { render } from "react-dom";
+import PropTypes from "prop-types";
 
 const App = () => {
-	return <p>test</p>;
+	return <p>Voting App</p>;
 };
 
-render(<App />, document.getElementById('root'));
+App.propTypes = {
+	text: PropTypes.string
+};
+
+const root = document.getElementById("root");
+if (root !== null) {
+	render(<App />, root);
+}
