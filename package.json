@@ -54,11 +54,11 @@
   },
   "lint-staged": {
     "server/**/*.js": [
-      "eslint --fix server",
+      "eslint --fix",
       "git add"
     ],
     "front/**/*.js": [
-      "eslint --fix server",
+      "eslint --fix",
       "git add"
     ]
   },
