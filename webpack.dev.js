@@ -7,6 +7,7 @@ module.exports = merge(common, {
 	mode: 'development',
 	devServer: {
 		hot: true,
+		historyApiFallback: true,
 		proxy: {
 			'/api': 'http://localhost:' + process.env.PORT
 		}
