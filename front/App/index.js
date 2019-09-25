@@ -1,14 +1,16 @@
 import { hot } from "react-hot-loader/root";
 import React from "react";
-import { Container, Button } from "@material-ui/core";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Home from "../pages/Home";
 
 const App = () => {
 	return (
-		<Container>
-			<Button variant="contained" color="primary">
-			Hello
-			</Button>
-		</Container>
+		<Router>
+			<Switch>
+				<Route exact path="/" component={Home}/>
+			</Switch>
+		</Router>
+		
 	);
 };
 
