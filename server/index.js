@@ -9,7 +9,14 @@ const DB_URL = process.env.NODE_ENV === "production"
 	: process.env.NODE_ENV === "development"
 		? process.env.DB_URL_TEST
 		: "";
-mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(DB_URL, 
+	{ 
+		useNewUrlParser: true, 
+		useUnifiedTopology: true,
+		useCreateIndex: true
+	})
+	.then(() => console.log("connected to db"))
+	.catch(() => console.log("error connecting to db"))
 	.then(() => {
 		console.log("connected to db");
 		const app = express();
@@ -17,6 +24,4 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 		const PORT = process.env.PORT;
 		app.listen(PORT, () => console.log("listening on port " + PORT));
 	})
-	.catch(() => {
-		console.log("error connecting to db");
-	});
+	.catch(e => console.log(e));

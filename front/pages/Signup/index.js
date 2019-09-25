@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button } from "@material-ui/core";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 const Signup = () => {
 	const [username, setUsername] = useState("");
@@ -8,6 +9,9 @@ const Signup = () => {
 	const [users, setUsers] = useState([]);
 	const [usersListFetched, setUsersListFetched] = useState(false);
 	const [lastSubmission , setLastSubmission] = useState(null);
+	const [userHasSignedUp, setUserHasSignedUp] = useState(false);
+	const [redirectToHome, setRedirectToHome] = useState(false);
+
 	useEffect(() => {
 		(async function() {
 			const { data: usersList } = await axios.get("/api/users");
@@ -15,10 +19,14 @@ const Signup = () => {
 			setUsersListFetched(true);
 		})();
 	}, [lastSubmission]);
-	
-	if (!usersListFetched) {
-		return null;
-	}
+
+	useEffect(() => {
+		if (userHasSignedUp) {
+			setTimeout(() => {
+				setRedirectToHome(true);
+			}, 5000);
+		}
+	}, [userHasSignedUp]);
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
@@ -27,15 +35,30 @@ const Signup = () => {
 		};
 		try {
 			await axios.post("/api/users", infos);
+			setUsername("");
+			setPassword("");
+			setLastSubmission(Date.now());
+			setUserHasSignedUp(true);
 		} catch (e) {
 			console.log("error creating user");
 		} finally {
 			setUsername("");
 			setPassword("");
-			setLastSubmission(Date.now());
 		}
 	}
-	
+
+	if (redirectToHome) {
+		return <Redirect to="/" />;
+	}
+
+	if (userHasSignedUp) {
+		return <div>Successfully signed up!</div>;
+	}
+
+	if (!usersListFetched) {
+		return null;
+	}
+
 	const userExists = users
 		.map(x => x.username)
 		.includes(username);
@@ -68,7 +91,7 @@ const Signup = () => {
 						color="primary" 
 						type="submit"
 					>
-						Submit
+						Sign up
 					</Button>
 				</div>
 			</form>
