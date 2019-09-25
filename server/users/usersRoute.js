@@ -2,6 +2,14 @@ const User = require("./usersModel");
 const bcrypt = require("bcrypt");
 
 function usersRoute(app) {
+	app.get("/api/users", async (req, res, next) => {
+		try {
+			const users = await User.find({});
+			res.json(users);
+		} catch (err) {
+			next(err);
+		}
+	});
 	app.post("/api/users", async (req, res, next) => {
 		const { username, password } = req.body;
 		try {

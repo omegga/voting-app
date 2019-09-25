@@ -8,5 +8,12 @@ const userSchema = new mongoose.Schema({
 	},
 	passwordHash: String
 });
+userSchema.set("toJSON", {
+	transform: (doc, ret) => {
+		delete ret._id;
+		delete ret.passwordHash;
+		delete ret.__v;
+	}
+});
 
 module.exports = mongoose.model("User", userSchema);

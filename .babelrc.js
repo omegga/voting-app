@@ -4,5 +4,13 @@ module.exports = {
 		"@babel/preset-react", 
 		"@babel/preset-flow"
 	],
-	"plugins": ["react-hot-loader/babel"]
+	"plugins": [
+		"react-hot-loader/babel",
+		[
+			"@babel/plugin-transform-runtime",
+			{
+				regenerator: true
+			}
+		]
+	]
 };
