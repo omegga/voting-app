@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 import { Container, TextField, Button } from "@material-ui/core";
+import axios from "axios";
 
 const Signup = () => {
-	const [user, setUser] = useState("");
+	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	function handleFormSubmit(e) {
-		e.preventDefault();
+	async function handleFormSubmit(event) {
+		event.preventDefault();
+		const infos = {
+			username, password
+		};
+		try {
+			await axios.post("/api/users", infos);
+		} catch (e) {
+			console.log("error creating user");
+		} finally {
+			setUsername("");
+			setPassword("");
+		}
 	}
 	return (
 		<Container>
@@ -13,10 +25,10 @@ const Signup = () => {
 				<TextField 
 					variant="outlined"
 					margin="normal"
-					label="User"
-					value={user}
-					onChange={(e) => setUser(e.target.value)}
-					name="user"
+					label="Username"
+					value={username}
+					onChange={(e) => setUsername(e.target.value)}
+					name="username"
 				/>
 				<TextField 
 					variant="outlined"
