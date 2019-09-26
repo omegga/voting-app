@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken");
 const Poll = require("./pollsModel");
 
 function pollsRoute(app) {
+	app.get("/api/polls", async (req, res) => {
+		const polls = await Poll.find({});
+		res.status(200).json(polls);
+	});
 	app.post("/api/polls", async (req, res, next) => {
 		const { question, answers } = req.body;
 		const authorizationPrefix = "bearer ";

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Container } from "@material-ui/core";
 import ButtonLink from "../../components/ButtonLink";
 import PollCreator from "../../components/PollCreator";
+import axios from "axios";
 
 const Home = () => {
 	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
 	const [user, setUser] = useState(null);
+	const [polls, setPolls] = useState([]);
 
 	useEffect(() => {
 		const loggedUser = localStorage.getItem("loggedUser");
@@ -13,6 +15,13 @@ const Home = () => {
 		if (loggedUser) {
 			setUser(JSON.parse(loggedUser));
 		}
+	}, []);
+
+	useEffect(() => {
+		axios.get("/api/polls")
+			.then(({ data }) => {
+				setPolls(data);
+			});
 	}, []);
 
 	if (!userLoggedStatusFetched) {
@@ -35,6 +44,9 @@ const Home = () => {
 			{ !user && (
 				<ButtonLink to="/signin" text="Sign in" buttonProps={{ variant: "contained", color: "primary" }} />
 			)}
+			<ul>
+				{ polls.map((poll, index) => <li key={index}>{poll.question.includes("?") ? poll.question : `${poll.question} ?`}</li>) }
+			</ul>
 		</Container>
 	);
 };

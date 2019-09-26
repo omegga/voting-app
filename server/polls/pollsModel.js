@@ -32,10 +32,7 @@ const pollSchema = new mongoose.Schema({
 	votes: [voteSchema]
 });
 pollSchema.set("toJSON", {
-	transform: (doc, ret) => {
-		delete ret._id;
-		delete ret.__v;
-	}
+	virtuals: true
 });
 
 module.exports = mongoose.model("Poll", pollSchema);
