@@ -25,6 +25,13 @@ const Home = () => {
 			});
 	}, []);
 
+	function fetchPollsList() {
+		axios.get("/api/polls")
+			.then(({ data }) => {
+				setPolls(data);
+			});
+	}
+
 	if (!userLoggedStatusFetched) {
 		return null;
 	}
@@ -59,7 +66,10 @@ const Home = () => {
 					buttonProps={{ variant: "contained", color: "primary" }} 
 				/>)
 			}
-			{ polls.length > 0 && <PollsList polls={polls} /> }
+			{ polls.length > 0 && (
+				<PollsList fetchPollsList={fetchPollsList} polls={polls} />
+			) 
+			}
 		</Container>
 	);
 };
