@@ -10,6 +10,19 @@ function pollsRoute(app) {
 		const poll = await Poll.findById(req.params.id).populate("author");
 		return res.status(200).json(poll);
 	});
+	app.put("/api/polls/vote", async (req, res, next) => {
+		const { pollId, answerId } = req.body;
+		try {
+			const poll = await Poll.findById(pollId);
+			poll.votes.push({
+				answerId
+			});
+			const savedPoll = await poll.save();
+			res.status(200).json(savedPoll);
+		} catch (exception) {
+			next(exception);
+		}
+	});
 	app.post("/api/polls", async (req, res, next) => {
 		const { question, answers } = req.body;
 		const authorizationPrefix = "bearer ";

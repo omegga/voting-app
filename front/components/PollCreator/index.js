@@ -18,7 +18,7 @@ const createInitialAnswers = () => {
 	return [{ _id: createObjectID(), value: "" }];
 };
 
-const PollCreator = ({ userToken }) => {
+const PollCreator = ({ userToken, setLastPollSubmit }) => {
 	const [question, setQuestion] = useState("");
 	const [answers, setAnswers] = useState(createInitialAnswers);
 	
@@ -50,6 +50,7 @@ const PollCreator = ({ userToken }) => {
 		await axios.post("/api/polls", { question, answers }, config);
 		setQuestion("");
 		setAnswers(createInitialAnswers);
+		setLastPollSubmit(Date.now());
 	}
 
 	return (
@@ -100,7 +101,8 @@ const PollCreator = ({ userToken }) => {
 	);
 };
 PollCreator.propTypes = {
-	userToken: PropTypes.string
+	userToken: PropTypes.string,
+	setLastPollSubmit: PropTypes.func
 };
 
 export default PollCreator;

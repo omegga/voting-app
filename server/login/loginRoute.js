@@ -13,7 +13,11 @@ function loginRoute(app) {
 		if (!correctPassword) {
 			return res.status(401).json({ error: "wrong credentials" });
 		}
-		const token = jwt.sign({ id: user.id, username: user.username }, process.env.TOKEN_SECRET, { expiresIn: 60 });
+		const token = jwt.sign(
+			{ id: user.id, username: user.username }, 
+			process.env.TOKEN_SECRET, 
+			{ expiresIn: "1h" }
+		);
 		res.json({ username, token });
 	});
 }
