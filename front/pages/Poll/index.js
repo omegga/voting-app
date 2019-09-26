@@ -11,12 +11,12 @@ const Poll = ({ match }) => {
 		axios.get(`/api/polls/${pollId}`)
 			.then(({ data }) => {
 				setPoll(data);
-
 			});
 	}, [pollId]);
 	
 	return (
 		<Container>
+			{ !poll && <span>Loading...</span>}
 			{
 				poll && (
 					<>
