@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography } from "@material-ui/core";
+import { Container } from "@material-ui/core";
+import axios from "axios";
 import ButtonLink from "../../components/ButtonLink";
 import PollCreator from "../../components/PollCreator";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import PollsList from "../../components/PollsList";
 
 const Home = () => {
 	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
@@ -47,24 +47,7 @@ const Home = () => {
 				<ButtonLink to="/signin" text="Sign in" buttonProps={{ variant: "contained", color: "primary" }} />
 			)}
 			{
-				polls.length > 0 && (
-					<>
-					<Typography variant="h4">
-						Polls List
-					</Typography>
-					<ul>
-						{ 
-							polls.map((poll, index) => {
-								return (
-									<Link key={index} to={`/polls/${poll.id}`}>
-										<li>{poll.question.includes("?") ? poll.question : `${poll.question} ?`}</li>
-									</Link>
-								);
-							}) 
-						}
-					</ul>
-					</>
-				)
+				polls.length > 0 && <PollsList polls={polls} />
 			}
 		</Container>
 	);
