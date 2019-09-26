@@ -3,6 +3,7 @@ const express = require("express");
 const usersRoute = require("./users/usersRoute");
 const loginRoute = require("./login/loginRoute");
 const pollsRoute = require("./polls/pollsRoute");
+const authRoute = require("./auth/authRoute");
 
 function loadApp(app) {
 	app.use(express.json());
@@ -14,6 +15,7 @@ function loadApp(app) {
 	usersRoute(app);
 	loginRoute(app);
 	pollsRoute(app);
+	authRoute(app);
 	app.use(express.static(path.join(__dirname, "../build")));
 	const indexHtmlFile = path.join(__dirname, "../build/index.html");
 	app.use("*", (req, res) => {
