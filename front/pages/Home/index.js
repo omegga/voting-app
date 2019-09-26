@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "@material-ui/core";
 import ButtonLink from "../../components/ButtonLink";
+import PollCreator from "../../components/PollCreator";
 
 const Home = () => {
 	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
@@ -27,6 +28,7 @@ const Home = () => {
 							Logged as: {user.username}
 						</p>
 						<ButtonLink to="/signin" text="Logout" buttonProps={{ variant: "contained", color: "secondary"}} />
+						<PollCreator userToken={user.token} />
 					</>
 			) 
 			}
