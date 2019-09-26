@@ -25,13 +25,20 @@ const voteSchema = new mongoose.Schema({
 const pollSchema = new mongoose.Schema({
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "User"
+		ref: "User",
+		required: true
 	},
 	question: {
 		type: String,
 		required: true
 	},
-	answers: [answerSchema],
+	answers: {
+		type: [answerSchema],
+		required: true,
+		validate: function(val) {
+			return val.length >= 2;
+		}
+	},
 	votes: [voteSchema]
 });
 pollSchema.set("toJSON", {

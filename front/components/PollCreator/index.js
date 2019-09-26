@@ -15,7 +15,10 @@ const createAnswer = () => {
 };
 
 const createInitialAnswers = () => {
-	return [{ _id: createObjectID(), value: "" }];
+	return [
+		{ _id: createObjectID(), value: "" },
+		{ _id: createObjectID(), value: "" }
+	];
 };
 
 const PollCreator = ({ userToken, setLastPollSubmit }) => {
@@ -81,7 +84,7 @@ const PollCreator = ({ userToken, setLastPollSubmit }) => {
 									onChange={e => handleAnswersChange(e, index)}
 								/>
 							</Grid>
-							{ index > 0 && 
+							{ index > 1 && 
 							<Grid item>
 								<ClearIcon fontSize="large" onClick={() => removeAnswer(answer._id)}/>
 							</Grid>
