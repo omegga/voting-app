@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
 const Poll = require("./pollsModel");
+const authMiddleWare = require("../middleware/auth");
 
 function pollsRoute(app) {
 	app.get("/api/polls", async (req, res) => {
@@ -23,21 +23,11 @@ function pollsRoute(app) {
 			next(exception);
 		}
 	});
-	app.post("/api/polls", async (req, res, next) => {
+	app.post("/api/polls", authMiddleWare, async (req, res, next) => {
 		const { question, answers } = req.body;
-		const authorizationPrefix = "bearer ";
-		const authorization = req.get("authorization");
-		const token = authorization.slice(authorizationPrefix.length);
-		if (!token) {
-			return res.status(401).json({ error: "token missing or invalid" });
-		}
 		try {
-			const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
-			if (!decodedToken.id) {
-				return res.status(401).json({ error: "token missing or invalid" });
-			}
 			const poll = new Poll({
-				author: decodedToken.id,
+				author: req.user.id,
 				question,
 				answers
 			});

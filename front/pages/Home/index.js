@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container } from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import Button from "@material-ui/core/Button";
 import axios from "axios";
 import ButtonLink from "../../components/ButtonLink";
 import PollsList from "../../components/PollsList";
@@ -9,6 +10,7 @@ const Home = () => {
 	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
 	const [user, setUser] = useState(null);
 	const [polls, setPolls] = useState([]);
+	const [userPolls, setUserPolls] = useState([]);
 
 	useEffect(() => {
 		const loggedUser = localStorage.getItem("loggedUser");
@@ -17,6 +19,18 @@ const Home = () => {
 			setUser(JSON.parse(loggedUser));
 		}
 	}, []);
+
+	useEffect(() => {
+		if (userLoggedStatusFetched && user) {
+			const config = {
+				headers: {
+					Authorization: `bearer ${user.token}`
+				}
+			};
+			axios.get("/api/users/polls", config)
+				.then(({ data }) => setUserPolls(data));
+		}
+	}, [user, userLoggedStatusFetched, polls]);
 
 	useEffect(() => {
 		axios.get("/api/polls")
@@ -37,7 +51,6 @@ const Home = () => {
 	}
 
 	return (
-		
 		<Container>
 			{ user
 				? (
@@ -66,8 +79,15 @@ const Home = () => {
 					buttonProps={{ variant: "contained", color: "primary" }} 
 				/>)
 			}
+			<div>
+				<Button onClick={fetchPollsList} size="small" variant="contained" color="primary">Refresh List</Button>
+			</div>
+			{ userPolls.length > 0 && (
+				<PollsList title="My Polls" fetchPollsList={fetchPollsList} polls={userPolls} />
+			) 
+			}
 			{ polls.length > 0 && (
-				<PollsList fetchPollsList={fetchPollsList} polls={polls} />
+				<PollsList title="Polls List" fetchPollsList={fetchPollsList} polls={polls} />
 			) 
 			}
 		</Container>

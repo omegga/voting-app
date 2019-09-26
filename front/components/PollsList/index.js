@@ -2,15 +2,14 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
 
-const PollsList = ({ polls, fetchPollsList }) => {
+const PollsList = ({ title, polls }) => {
 	return (
 		<>
 			<Typography variant="h4">
-				Polls List
+				{title}
 			</Typography>
-			<Button onClick={fetchPollsList} size="small" variant="contained" color="primary">Refresh List</Button>
+			
 			<ul>
 				{
 					polls.map((poll, index) => {
@@ -26,8 +25,8 @@ const PollsList = ({ polls, fetchPollsList }) => {
 	);
 };
 PollsList.propTypes = {
+	title: PropTypes.string,
 	polls: PropTypes.array,
-	fetchPollsList: PropTypes.func
 };
 
 export default PollsList;

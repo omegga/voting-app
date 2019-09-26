@@ -1,7 +1,17 @@
-const User = require("./usersModel");
 const bcrypt = require("bcrypt");
+const User = require("./usersModel");
+const Poll = require("../polls/pollsModel");
+const authMiddleware = require("../middleware/auth");
 
 function usersRoute(app) {
+	app.get("/api/users/polls", authMiddleware, async (req, res, next) => {
+		try {
+			const polls = await Poll.find({ author: req.user.id });
+			return res.status(200).json(polls);
+		}	catch (exception) {
+			next(exception);
+		}
+	});
 	app.get("/api/users", async (req, res, next) => {
 		try {
 			const users = await User.find({});
