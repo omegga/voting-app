@@ -3,6 +3,7 @@ import { Container } from "@material-ui/core";
 import ButtonLink from "../../components/ButtonLink";
 import PollCreator from "../../components/PollCreator";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Home = () => {
 	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
@@ -45,7 +46,15 @@ const Home = () => {
 				<ButtonLink to="/signin" text="Sign in" buttonProps={{ variant: "contained", color: "primary" }} />
 			)}
 			<ul>
-				{ polls.map((poll, index) => <li key={index}>{poll.question.includes("?") ? poll.question : `${poll.question} ?`}</li>) }
+				{ 
+					polls.map((poll, index) => {
+						return (
+							<Link key={index} to={`/polls/${poll.id}`}>
+								<li>{poll.question.includes("?") ? poll.question : `${poll.question} ?`}</li>
+							</Link>
+						);
+					}) 
+				}
 			</ul>
 		</Container>
 	);

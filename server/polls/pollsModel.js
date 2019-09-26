@@ -10,6 +10,9 @@ const answerSchema = new mongoose.Schema({
 		required: true
 	}
 });
+answerSchema.set("toJSON", {
+	virtuals: true
+});
 
 const voteSchema = new mongoose.Schema({
 	userId: {
