@@ -45,7 +45,11 @@ router.route("/:id")
 		try {
 			const pollId = req.params.id;
 			const newAnswers = req.body.answers;
+			const userId = req.user.id;
 			const poll = await Poll.findById(pollId).populate("author");
+			if (!poll.author.equals(userId)) {
+				return res.sendStatus(401);
+			}
 			newAnswers.forEach(answer => poll.answers.push(answer));
 			const savedPoll = await poll.save();
 			return res.status(200).json(savedPoll);
