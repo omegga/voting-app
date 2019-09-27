@@ -11,6 +11,7 @@ const Home = () => {
 	const [user, setUser] = useState(null);
 	const [polls, setPolls] = useState([]);
 	const [userPolls, setUserPolls] = useState([]);
+	const [lastPollsFetch, setLastPollsFetched] = useState(Date.now());
 
 	useEffect(() => {
 		const loggedUser = localStorage.getItem("loggedUser");
@@ -30,20 +31,17 @@ const Home = () => {
 			axios.get(`/api/users/${user.id}/polls`, config)
 				.then(({ data }) => setUserPolls(data));
 		}
-	}, [user, userLoggedStatusFetched, polls]);
+	}, [user, userLoggedStatusFetched, lastPollsFetch]);
 
 	useEffect(() => {
 		axios.get("/api/polls")
 			.then(({ data }) => {
 				setPolls(data);
 			});
-	}, []);
+	}, [lastPollsFetch]);
 
 	function fetchPollsList() {
-		axios.get("/api/polls")
-			.then(({ data }) => {
-				setPolls(data);
-			});
+		setLastPollsFetched(Date.now());
 	}
 
 	if (!userLoggedStatusFetched) {
@@ -83,11 +81,11 @@ const Home = () => {
 				<Button onClick={fetchPollsList} size="small" variant="contained" color="primary">Refresh List</Button>
 			</div>
 			{ userPolls.length > 0 && (
-				<PollsList title="My Polls" fetchPollsList={fetchPollsList} polls={userPolls} />
+				<PollsList title="My Polls" polls={userPolls} />
 			) 
 			}
 			{ polls.length > 0 && (
-				<PollsList title="Polls List" fetchPollsList={fetchPollsList} polls={polls} />
+				<PollsList title="Polls List" polls={polls} />
 			) 
 			}
 		</Container>
