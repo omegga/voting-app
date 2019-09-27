@@ -53,8 +53,9 @@ router.route("/:id")
 			next(exception);
 		}
 	});
-router.put("/vote", async (req, res, next) => {
-	const { pollId, answerId } = req.body;
+router.put("/:id/vote", async function addVoteToPoll(req, res, next) {
+	const pollId = req.params.id;
+	const answerId = req.body.answerId;
 	try {
 		const poll = await Poll.findById(pollId);
 		poll.votes.push({

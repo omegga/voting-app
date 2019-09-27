@@ -30,8 +30,7 @@ const Poll = ({ match }) => {
 	async function handleFormSubmit(event) {
 		event.preventDefault();
 
-		await axios.put("/api/polls/vote", {
-			pollId,
+		await axios.put(`/api/polls/${pollId}/vote`, {
 			answerId: checkedAnswerId
 		});
 		setLastVote(Date.now());
