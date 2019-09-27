@@ -9,6 +9,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import ObjectID from "bson-objectid";
+import { Redirect } from "react-router-dom";
 
 // returns a 24 character hex string
 const createObjectID = () => ObjectID().str;
@@ -22,7 +23,8 @@ const PollEditor = ({ match }) => {
 	const [poll, setPoll] = useState(null);
 	const [loginError, setLoginError] = useState(false);
 	const [answers, setAnswers] = useState([]);
-	const [userHasSubmittedForm, setUserHasSubmittedForm] = useState(Date.now());
+	const [userHasEditedPoll, setUserHasEditedPoll] = useState(Date.now());
+	const [userHasDeletedPoll, setUserHasDeletedPoll] = useState(false);
 
 	useEffect(() => {
 		const userJson = localStorage.getItem("loggedUser");
@@ -42,7 +44,7 @@ const PollEditor = ({ match }) => {
 			.catch(() => {
 				setLoginError(true);
 			});
-	}, [pollId, userHasSubmittedForm]);
+	}, [pollId, userHasEditedPoll]);
 
 	function removeAnswer(answerId){
 		setAnswers(answers.filter(answer => answer._id !== answerId));
@@ -76,7 +78,26 @@ const PollEditor = ({ match }) => {
 		};
 		await axios.put(`/api/polls/${pollId}`, { answers }, config);
 		setAnswers([]);
-		setUserHasSubmittedForm(Date.now());
+		setUserHasEditedPoll(Date.now());
+	}
+
+	async function deletePoll() {
+		const userJson = localStorage.getItem("loggedUser");
+		if (!userJson) {
+			return setLoginError(true);
+		}
+		const user = JSON.parse(userJson);
+		const config = {
+			headers: {
+				Authorization: `bearer ${user.token}`
+			}
+		};
+		await axios.delete(`/api/polls/${pollId}`, config);
+		setUserHasDeletedPoll(true);
+	}
+
+	if (userHasDeletedPoll) {
+		return <Redirect to="/" />;
 	}
 
 	if (loginError) {
@@ -164,6 +185,15 @@ const PollEditor = ({ match }) => {
 					</Button>
 				</div>
 			</form>
+			<div>
+				<Button
+					variant="contained"
+					color="secondary"
+					onClick={deletePoll}
+				>
+					Delete Poll
+				</Button>
+			</div>
 		</Container>
 	);
 };

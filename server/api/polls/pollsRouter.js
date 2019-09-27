@@ -56,6 +56,20 @@ router.route("/:id")
 		} catch (exception) {
 			next(exception);
 		}
+	})
+	.delete(authMiddleWare, async function deletePoll(req, res, next) {
+		try {
+			const pollId = req.params.id;
+			const userId = req.user.id;
+			const poll = await Poll.findById(pollId).populate("author");
+			if (!poll.author.equals(userId)) {
+				return res.sendStatus(401);
+			}
+			await Poll.deleteOne({ _id: pollId });
+			return res.sendStatus(200);
+		} catch (exception) {
+			next(exception);
+		}
 	});
 router.put("/:id/vote", async function addVoteToPoll(req, res, next) {
 	const pollId = req.params.id;
