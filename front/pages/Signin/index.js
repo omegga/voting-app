@@ -18,8 +18,8 @@ const Signin = () => {
 			username, password
 		};
 		try {
-			const { data: { username, token } } = await axios.post("/api/login", infos);
-			localStorage.setItem("loggedUser", JSON.stringify({ username, token }));
+			const { data: { id, username, token } } = await axios.post("/api/login", infos);
+			localStorage.setItem("loggedUser", JSON.stringify({ id, username, token }));
 			setUsername("");
 			setPassword("");
 			setIsLogged(true);

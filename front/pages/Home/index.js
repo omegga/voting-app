@@ -27,7 +27,7 @@ const Home = () => {
 					Authorization: `bearer ${user.token}`
 				}
 			};
-			axios.get("/api/users/polls", config)
+			axios.get(`/api/users/${user.id}/polls`, config)
 				.then(({ data }) => setUserPolls(data));
 		}
 	}, [user, userLoggedStatusFetched, polls]);

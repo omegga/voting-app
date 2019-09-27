@@ -4,23 +4,27 @@ const jwt = require("jsonwebtoken");
 const User = require("../users/usersModel");
 
 const router = express.Router();
-router.post("/", async (req, res, next) => {
+router.post("/", async function loginUser(req, res, next) {
 	const { username, password } = req.body;
 	try {
-		const user = await User.findOne({ username });
-		if (!user) {
+		const fetchedUser = await User.findOne({ username });
+		if (!fetchedUser) {
 			return res.status(401).json({ error: "wrong credentials" });
 		}
-		const correctPassword = await bcrypt.compare(password, user.passwordHash);
+		const correctPassword = await bcrypt.compare(password, fetchedUser.passwordHash);
 		if (!correctPassword) {
 			return res.status(401).json({ error: "wrong credentials" });
 		}
 		const token = jwt.sign(
-			{ id: user.id, username: user.username }, 
+			{ id: fetchedUser.id, username: fetchedUser.username }, 
 			process.env.TOKEN_SECRET,
 			{ expiresIn: process.env.TOKEN_EXPIRATION }
 		);
-		res.status(200).json({ username, token });
+		res.status(200).json({
+			id: fetchedUser.id,
+			username: fetchedUser.username,
+			token 
+		});
 	} catch (exception) {
 		next(exception);
 	}
