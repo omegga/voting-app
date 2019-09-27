@@ -18,15 +18,14 @@ const Signin = () => {
 			username, password
 		};
 		try {
-			const { data } = await axios.post("/api/login", infos);
-			localStorage.setItem("loggedUser", JSON.stringify(data));
+			const { data: { username, token } } = await axios.post("/api/login", infos);
+			localStorage.setItem("loggedUser", JSON.stringify({ username, token }));
 			setUsername("");
 			setPassword("");
 			setIsLogged(true);
 		} catch (e) {
 			setUsername("");
 			setPassword("");
-			console.log("error login user");
 		}
 	}
 

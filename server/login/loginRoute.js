@@ -16,8 +16,8 @@ function loginRoute(app) {
 			}
 			const token = jwt.sign(
 				{ id: user.id, username: user.username }, 
-				process.env.TOKEN_SECRET, 
-				{ expiresIn: "1h" }
+				process.env.TOKEN_SECRET,
+				{ expiresIn: process.env.TOKEN_EXPIRATION }
 			);
 			res.status(200).json({ username, token });
 		} catch (exception) {
