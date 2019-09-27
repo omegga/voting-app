@@ -6,6 +6,7 @@ import Signup from "../pages/Signup";
 import Signin from "../pages/Signin";
 import Poll from "../pages/Poll";
 import PollCreator from "../pages/PollCreator";
+import PollEditor from "../pages/PollEditor";
 
 const App = () => {
 	return (
@@ -15,6 +16,7 @@ const App = () => {
 				<Route path="/signin" component={Signin}/>
 				<Route path="/signup" component={Signup}/>
 				<Route path="/polls/new" component={PollCreator} />
+				<Route path="/polls/:id/edit" component={PollEditor} />
 				<Route path="/polls/:id" component={Poll} />
 			</Switch>
 		</Router>

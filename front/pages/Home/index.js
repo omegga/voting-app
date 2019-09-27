@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import axios from "axios";
 import ButtonLink from "../../components/ButtonLink";
 import PollsList from "../../components/PollsList";
+import UserPollsList from "../../components/UserPollsList";
 import { Link } from "react-router-dom";
 
 const Home = () => {
@@ -81,7 +82,7 @@ const Home = () => {
 				<Button onClick={fetchPollsList} size="small" variant="contained" color="primary">Refresh List</Button>
 			</div>
 			{ userPolls.length > 0 && (
-				<PollsList title="My Polls" polls={userPolls} />
+				<UserPollsList title="My Polls" polls={userPolls} />
 			) 
 			}
 			{ polls.length > 0 && (

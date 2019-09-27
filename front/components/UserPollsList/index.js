@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const PollsList = ({ title, polls }) => {
+const UserPollsList = ({ title, polls }) => {
 	return (
 		<>
 			<Typography variant="h4">
@@ -13,7 +13,7 @@ const PollsList = ({ title, polls }) => {
 				{
 					polls.map((poll, index) => {
 						return (
-							<Link key={index} to={`/polls/${poll.id}`}>
+							<Link key={index} to={`/polls/${poll.id}/edit`}>
 								<li>{poll.question.includes("?") ? poll.question : `${poll.question} ?`}</li>
 							</Link>
 						);
@@ -23,9 +23,9 @@ const PollsList = ({ title, polls }) => {
 		</>
 	);
 };
-PollsList.propTypes = {
+UserPollsList.propTypes = {
 	title: PropTypes.string,
 	polls: PropTypes.array,
 };
 
-export default PollsList;
+export default UserPollsList;
