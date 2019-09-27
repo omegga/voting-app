@@ -181,7 +181,7 @@ const PollEditor = ({ match }) => {
 						variant="contained"
 						color="primary"
 					>
-						Create
+						Submit Changes
 					</Button>
 				</div>
 			</form>
