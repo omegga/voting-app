@@ -5,13 +5,7 @@ import axios from "axios";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-
-function getPercentage(poll, answer) {
-	const answerCount = poll.votes.reduce((count, vote) => {
-		return answer.id === vote.answerId ? count + 1 : count;
-	}, 0);
-	return `${Math.round(answerCount / poll.votes.length * 100)}%`;
-}
+import PollResult from "../../components/PollResult";
 
 const Poll = ({ match }) => {
 	const pollId = match.params.id;
@@ -70,18 +64,7 @@ const Poll = ({ match }) => {
 						)
 					}
 					{ 
-						userHasAnswered && (
-						<>
-							<p>Answers:</p>
-							<ol>
-								{
-									poll.answers.map(answer => {
-										return <li key={answer.id}>{answer.value} {getPercentage(poll, answer)}</li>;
-									})
-								}
-							</ol>
-						</>
-						)
+						userHasAnswered && <PollResult answers={poll.answers} votes={poll.votes} />
 					}
 					</>
 				)
