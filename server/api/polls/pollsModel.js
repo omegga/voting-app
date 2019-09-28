@@ -19,7 +19,10 @@ const voteSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
 	},
-	answerId: mongoose.Schema.Types.ObjectId
+	answerId: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true
+	}
 });
 
 const pollSchema = new mongoose.Schema({
