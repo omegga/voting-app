@@ -4,6 +4,7 @@ import { Container } from "@material-ui/core";
 import axios from "axios";
 import PollResult from "../../components/PollResult";
 import PollVote from "../../components/PollVote";
+import TopHeader from "../../components/TopHeader";
 
 const Poll = ({ match }) => {
 	const pollId = match.params.id;
@@ -12,7 +13,7 @@ const Poll = ({ match }) => {
 	const [lastVote, setLastVote] = useState(Date.now());
 	const [notFound, setNotFound] = useState(false);
 
-	useEffect(() => {
+	useEffect(function fetchPoll() {
 		axios.get(`/api/polls/${pollId}`)
 			.then(({ data }) => {
 				setPoll(data);
@@ -24,7 +25,6 @@ const Poll = ({ match }) => {
 
 	async function handleFormSubmit(event, checkedAnswerId) {
 		event.preventDefault();
-
 		await axios.put(`/api/polls/${pollId}/vote`, {
 			answerId: checkedAnswerId
 		});
@@ -40,21 +40,31 @@ const Poll = ({ match }) => {
 		);
 	}
 
+	if (!poll) {
+		return (
+			<Container>
+				<span>Loading poll...</span>
+			</Container>
+		);
+	}
+
 	return (
-		<Container>
-			{ !poll && <span>Loading poll...</span>}
-			{
-				poll && (
-					<>
-					<h1>Question: {poll.question}</h1>
-					<h2>Author: {poll.author.username}</h2>
-					<h3>Number of votes: {poll.votes.length}</h3>
-					{ !userHasAnswered && <PollVote answers={poll.answers} handleFormSubmit={handleFormSubmit} /> }
-					{ poll.votes.length > 0 && <PollResult answers={poll.answers} votes={poll.votes} /> }
-					</>
-				)
-			}
-		</Container>
+		<>
+			<TopHeader />
+			<Container>
+				{
+					poll && (
+						<>
+						<h1>Question: {poll.question}</h1>
+						<h2>Author: {poll.author.username}</h2>
+						<h3>Number of votes: {poll.votes.length}</h3>
+						{ !userHasAnswered && <PollVote answers={poll.answers} handleFormSubmit={handleFormSubmit} /> }
+						{ poll.votes.length > 0 && <PollResult answers={poll.answers} votes={poll.votes} /> }
+						</>
+					)
+				}
+			</Container>
+		</>
 	);
 };
 Poll.propTypes = {
