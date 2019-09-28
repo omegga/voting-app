@@ -29,9 +29,13 @@ const PollVote = ({ answers, handleFormSubmit }) => {
 		</form>
 	);
 };
+PollVote.defaultProps = {
+	answers: [],
+	handleFormSubmit: () => {}
+};
 PollVote.propTypes = {
-	answers: PropTypes.array.required,
-	handleFormSubmit: PropTypes.func.required
+	answers: PropTypes.array.isRequired,
+	handleFormSubmit: PropTypes.func.isRequired
 };
 
 export default PollVote;

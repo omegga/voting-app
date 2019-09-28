@@ -10,11 +10,15 @@ const Poll = ({ match }) => {
 	const [poll, setPoll] = useState(null);
 	const [userHasAnswered, setUserHasAnswered] = useState(false);
 	const [lastVote, setLastVote] = useState(Date.now());
+	const [notFound, setNotFound] = useState(false);
 
 	useEffect(() => {
 		axios.get(`/api/polls/${pollId}`)
 			.then(({ data }) => {
 				setPoll(data);
+			})
+			.catch(() => {
+				setNotFound(true);
 			});
 	}, [pollId, lastVote]);
 
@@ -28,17 +32,25 @@ const Poll = ({ match }) => {
 		setUserHasAnswered(true);
 	}
 
+	if (notFound) {
+		return (
+			<Container>
+				<div>Poll not found</div>
+			</Container>
+		);
+	}
+
 	return (
 		<Container>
-			{ !poll && <span>Loading...</span>}
+			{ !poll && <span>Loading poll...</span>}
 			{
 				poll && (
 					<>
 					<h1>Question: {poll.question}</h1>
 					<h2>Author: {poll.author.username}</h2>
-					<p>Votes: {poll.votes.length}</p>
+					<h3>Number of votes: {poll.votes.length}</h3>
 					{ !userHasAnswered && <PollVote answers={poll.answers} handleFormSubmit={handleFormSubmit} /> }
-					{ userHasAnswered && <PollResult answers={poll.answers} votes={poll.votes} /> }
+					{ poll.votes.length > 0 && <PollResult answers={poll.answers} votes={poll.votes} /> }
 					</>
 				)
 			}

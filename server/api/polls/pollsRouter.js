@@ -39,6 +39,9 @@ router.route("/:id")
 	.get(async function getPoll(req, res) {
 		const pollId = req.params.id;
 		const poll = await Poll.findById(pollId).populate("author");
+		if (poll === null) {
+			return res.sendStatus(404);
+		}
 		return res.status(200).json(poll);
 	})
 	.put(authMiddleWare, async function editPoll(req, res, next) {
