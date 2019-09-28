@@ -1,5 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -9,17 +11,19 @@ const PollsList = ({ title, polls }) => {
 			<Typography variant="h4">
 				{title}
 			</Typography>
-			<ul>
+			<List>
 				{
 					polls.map((poll, index) => {
 						return (
-							<Link key={index} to={`/polls/${poll.id}`}>
-								<li>{poll.question.includes("?") ? poll.question : `${poll.question} ?`}</li>
-							</Link>
+							<ListItem key={index}>
+								<Link to={`/polls/${poll.id}`}>
+									{poll.question.includes("?") ? poll.question : `${poll.question} ?`}
+								</Link>
+							</ListItem>
 						);
 					})
 				}
-			</ul>
+			</List>
 		</>
 	);
 };
