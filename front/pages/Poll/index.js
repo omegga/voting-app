@@ -34,17 +34,23 @@ const Poll = ({ match }) => {
 
 	if (notFound) {
 		return (
+			<>
+			<TopHeader />
 			<Container>
 				<div>Poll not found</div>
 			</Container>
+			</>
 		);
 	}
-
+	
 	if (!poll) {
 		return (
+			<>
+			<TopHeader />
 			<Container>
 				<span>Loading poll...</span>
 			</Container>
+			</>
 		);
 	}
 

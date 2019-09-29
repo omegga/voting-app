@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import ButtonLink from "../../components/ButtonLink";
 import PollsList from "../../components/PollsList";
 import UserPollsList from "../../components/UserPollsList";
-import { Link } from "react-router-dom";
+import TopHeader from "../../components/TopHeader";
 
 const Home = () => {
 	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
@@ -50,6 +51,8 @@ const Home = () => {
 	}
 
 	return (
+		<>
+		<TopHeader />
 		<Container>
 			{ user
 				? (
@@ -90,6 +93,7 @@ const Home = () => {
 			) 
 			}
 		</Container>
+		</>
 	);
 };
 

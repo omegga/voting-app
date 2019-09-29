@@ -10,6 +10,7 @@ import ObjectID from "bson-objectid";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
+import TopHeader from "../../components/TopHeader";
 
 // returns a 24 character hex string
 const createObjectID = () => ObjectID().str;
@@ -96,6 +97,8 @@ const PollCreator = () => {
 	}
 
 	return (
+		<>
+		<TopHeader />
 		<Container>
 			<Typography variant="h4">
 					Create a new poll
@@ -154,6 +157,7 @@ const PollCreator = () => {
 				</div>
 			</form>
 		</Container>
+		</>
 	);
 };
 PollCreator.propTypes = {

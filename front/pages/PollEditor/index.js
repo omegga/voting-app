@@ -10,6 +10,7 @@ import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import ObjectID from "bson-objectid";
 import { Redirect } from "react-router-dom";
+import TopHeader from "../../components/TopHeader";
 
 // returns a 24 character hex string
 const createObjectID = () => ObjectID().str;
@@ -101,14 +102,30 @@ const PollEditor = ({ match }) => {
 	}
 
 	if (loginError) {
-		return <div>401 Unauthorized</div>;
+		return (
+			<>
+			<TopHeader />
+			<Container>
+				<div>401 Unauthorized</div>
+			</Container>
+			</>
+		);
 	}
 
 	if (!poll) {
-		return <div>Loading...</div>;
+		return (
+			<>
+			<TopHeader/>
+			<Container>
+				<div>Loading...</div>
+			</Container>
+			</>
+		);
 	}
 
 	return (
+		<>
+		<TopHeader />
 		<Container>
 			<Typography variant="h4">
 				Edit poll
@@ -195,6 +212,7 @@ const PollEditor = ({ match }) => {
 				</Button>
 			</div>
 		</Container>
+		</>
 	);
 };
 PollEditor.propTypes = {

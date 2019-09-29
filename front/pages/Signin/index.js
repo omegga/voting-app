@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 import { Redirect, Link } from "react-router-dom";
+import TopHeader from "../../components/TopHeader";
 
 const Signin = () => {
 	const [username, setUsername] = useState("");
@@ -34,6 +35,8 @@ const Signin = () => {
 	}
 
 	return (
+		<>
+		<TopHeader />
 		<Container>
 			<form onSubmit={handleFormSubmit}>
 				<TextField
@@ -69,6 +72,7 @@ const Signin = () => {
 				</Link>
 			</div>
 		</Container>
+		</>
 	);
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import TopHeader from "../../components/TopHeader";
 
 const Signup = () => {
 	const [username, setUsername] = useState("");
@@ -52,7 +53,14 @@ const Signup = () => {
 	}
 
 	if (userHasSignedUp) {
-		return <div>Successfully signed up!</div>;
+		return (
+			<>
+			<TopHeader />
+			<Container>
+				<div>Successfully signed up! Redirecting to homepage in a few seconds...</div>
+			</Container>
+			</>
+		);
 	}
 
 	if (!usersListFetched) {
@@ -64,6 +72,8 @@ const Signup = () => {
 		.includes(username);
 
 	return (
+		<>
+		<TopHeader />
 		<Container>
 			<form onSubmit={handleFormSubmit}>
 				<TextField 
@@ -96,6 +106,7 @@ const Signup = () => {
 				</div>
 			</form>
 		</Container>
+		</>
 	);
 };
 
