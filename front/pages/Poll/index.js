@@ -5,6 +5,7 @@ import axios from "axios";
 import PollResult from "../../components/PollResult";
 import PollVote from "../../components/PollVote";
 import TopHeader from "../../components/TopHeader";
+import TwitterShareButton from "../../components/TwitterShareButton";
 
 const Poll = ({ match }) => {
 	const pollId = match.params.id;
@@ -64,6 +65,7 @@ const Poll = ({ match }) => {
 						<h1>Question: {poll.question}</h1>
 						<h2>Author: {poll.author.username}</h2>
 						<h3>Number of votes: {poll.votes.length}</h3>
+						<TwitterShareButton text={poll.question} />
 						{ !userHasAnswered && <PollVote answers={poll.answers} handleFormSubmit={handleFormSubmit} /> }
 						{ poll.votes.length > 0 && <PollResult answers={poll.answers} votes={poll.votes} /> }
 						</>
