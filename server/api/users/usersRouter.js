@@ -4,6 +4,8 @@ const User = require("./usersModel");
 const Poll = require("../polls/pollsModel");
 const authMiddleware = require("../../middleware/auth");
 
+const SALT_ROUNDS = 10;
+
 const router = express.Router();
 router.get("/:id/polls", authMiddleware, [
 	function verifyUser(req, res, next) {
@@ -33,8 +35,7 @@ router.route("/")
 	.post(async (req, res, next) => {
 		const { username, password } = req.body;
 		try {
-			const saltRounds = 10;
-			const passwordHash = await bcrypt.hash(password, saltRounds);
+			const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 			const newUser = new User({
 				username,
 				passwordHash
