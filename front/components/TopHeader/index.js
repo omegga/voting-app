@@ -77,13 +77,9 @@ const TopHeader = ({ loggedUser, setLoggedUser }) => {
 									</Link>
 								</MenuItem>
 								<MenuItem onClick={handleClose}>
-									{/* <Link to="/signin" className={classes.link}> */}
-									<Button onClick={signOut} className={classes.link}>
-										<Typography>
+									<Typography onClick={signOut} className={classes.link}>
 											Logout
-										</Typography>
-									</Button>
-									{/* </Link> */}
+									</Typography>
 								</MenuItem>
 							</Menu>
 							</>

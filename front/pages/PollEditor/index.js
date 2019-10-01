@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import ObjectID from "bson-objectid";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import TopHeader from "../../components/TopHeader";
 
 // returns a 24 character hex string
@@ -19,6 +20,13 @@ const createObjectID = () => ObjectID().str;
 const createAnswer = () => {
 	return { _id: createObjectID(), value: "" };
 };
+
+const useStyles = makeStyles(theme => ({
+	title: {
+		marginTop: theme.spacing(5),
+		marginBottom: theme.spacing(2)
+	}
+}));
 
 const PollEditor = ({ match, loggedUser }) => {
 	const pollId = match.params.id;
@@ -92,6 +100,8 @@ const PollEditor = ({ match, loggedUser }) => {
 		setUserHasDeletedPoll(true);
 	}
 
+	const classes = useStyles();
+
 	if (userHasDeletedPoll) {
 		return <Redirect to="/" />;
 	}
@@ -126,7 +136,7 @@ const PollEditor = ({ match, loggedUser }) => {
 		<>
 		<TopHeader />
 		<Container>
-			<Typography variant="h4">
+			<Typography variant="h4" className={classes.title}>
 				Edit poll
 			</Typography>
 			<form onSubmit={handleFormSubmit}>

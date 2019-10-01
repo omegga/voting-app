@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Container } from "@material-ui/core";
+import { Container, Typography } from "@material-ui/core";
 import axios from "axios";
 import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import PollResult from "../../components/PollResult";
 import PollVote from "../../components/PollVote";
 import TopHeader from "../../components/TopHeader";
 import TwitterShareButton from "../../components/TwitterShareButton";
 import { setCurrentPoll } from "../../reducers/actions";
+
+const useStyles = makeStyles(theme => ({
+	title: {
+		marginTop: theme.spacing(3),
+		marginBottom: theme.spacing(3)
+	}
+}));
 
 const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 	const pollId = match.params.id;
@@ -33,6 +41,8 @@ const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 		setLastVote(Date.now());
 		setUserHasAnswered(true);
 	}
+
+	const classes = useStyles();
 
 	if (notFound) {
 		return (
@@ -63,9 +73,9 @@ const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 				{
 					Object.keys(currentPoll).length > 0 && (
 						<>
-						<h1>Question: {currentPoll.question}</h1>
-						<h2>Author: {currentPoll.author.username}</h2>
-						<h3>Number of votes: {currentPoll.votes.length}</h3>
+						<Typography className={classes.title} variant="h4">Question: {currentPoll.question}</Typography>
+						<Typography className={classes.title} variant="h4">Author: {currentPoll.author.username}</Typography>
+						<Typography className={classes.title} variant="h5">Number of votes: {currentPoll.votes.length}</Typography>
 						<TwitterShareButton text={currentPoll.question} />
 						{ !userHasAnswered && <PollVote answers={currentPoll.answers} handleFormSubmit={handleFormSubmit} /> }
 						{ currentPoll.votes.length > 0 && <PollResult answers={currentPoll.answers} votes={currentPoll.votes} /> }
