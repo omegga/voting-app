@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -27,12 +27,6 @@ const useStyles = makeStyles(theme => ({
 
 const TopHeader = ({ loggedUser, setLoggedUser }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
-	useEffect(function getLoggedUser() {
-		const loggedUser = localStorage.getItem("loggedUser");
-		if (loggedUser) {
-			setLoggedUser(JSON.parse(loggedUser));
-		}
-	}, [setLoggedUser]);
 	
 	function handleClick(event) {
 		setAnchorEl(event.currentTarget);

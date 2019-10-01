@@ -8,7 +8,14 @@ import { createStore } from "redux";
 import rootReducer from "./reducers";
 import App from "./App";
 
-const store = createStore(rootReducer);
+const user = JSON.parse(window.localStorage.getItem("loggedUser"));
+const initialState = {
+	loggedUser: user || {},
+	polls: [],
+	currentPoll: {}
+};
+
+const store = createStore(rootReducer, initialState);
 
 const root = document.getElementById("root");
 if (root !== null) {
