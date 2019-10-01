@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 const TwitterShareButton = ({ text }) => {
-	useEffect(() => {
+	useEffect(function loadTwitterWidget() {
 		window.twttr.widgets.load();
 	}, []);
 

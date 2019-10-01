@@ -28,32 +28,32 @@ const createInitialAnswers = () => {
 };
 
 const PollCreator = ({ loggedUser }) => {
-	const [isLoggedUserTokenValid, setIsLoggedUserTokenValid] = useState(false);
-	const [loginError, setLoginError] = useState(false);
+	const [step, setStep] = useState("checkLogged");
 	const [question, setQuestion] = useState("");
 	const [answers, setAnswers] = useState(createInitialAnswers);
-	const [userHasSubmittedForm, setUserHasSubmittedForm] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(loggedUser).length === 0) {
-			setLoginError(true);
+	useEffect(function checkUserCredentials() {
+		if (step === "checkLogged")	{
+			if (Object.keys(loggedUser).length === 0) {
+				return setStep("loggedUserError");
+			}
+			setStep("checkAuth");
 		}
-	}, [loggedUser]);
 
-	useEffect(() => {
-		if (Object.keys(loggedUser).length > 0 && !isLoggedUserTokenValid) {
+		if (step === "checkAuth") {
+			console.log("check auth");
 			const config = {
 				headers: {
 					Authorization: `bearer ${loggedUser.token}`
 				}
 			};
 			axios.post("/api/auth", {}, config)
-				.then(() => setIsLoggedUserTokenValid(true))
+				.then(() => setStep("authenticationSuccess"))
 				.catch(() => {
-					setLoginError(true);
+					setStep("authenticationError");
 				});
 		}
-	}, [loggedUser, isLoggedUserTokenValid]);
+	}, [loggedUser, step]);
 
 	function addAnswer() {
 		setAnswers([...answers, createAnswer()]);
@@ -83,18 +83,14 @@ const PollCreator = ({ loggedUser }) => {
 		await axios.post("/api/polls", { question, answers }, config);
 		setQuestion("");
 		setAnswers(createInitialAnswers);
-		setUserHasSubmittedForm(true);
+		setStep("formSubmitted");
 	}
 
-	if (loginError) {
+	if (step === "loggedUserError" || step === "authenticationError") {
 		return <Redirect to="/signin" />;
 	}
 
-	if (userHasSubmittedForm) {
-		return <Redirect to="/" />;
-	}
-
-	if (Object.keys(loggedUser).length > 0 && !isLoggedUserTokenValid) {
+	if (step === "checkLogged" || step === "checkAuth") {
 		return (
 			<Container>
 				<span>Authenticating user...</span>
@@ -102,69 +98,75 @@ const PollCreator = ({ loggedUser }) => {
 		);
 	}
 
-	return (
-		<>
-		<TopHeader />
-		<Container>
-			<Typography variant="h4">
-					Create a new poll
-			</Typography>
-			<form onSubmit={handleFormSubmit}>
-				<TextField
-					variant="outlined"
-					margin="normal"
-					label="question"
-					value={question}
-					required
-					onChange={e => setQuestion(e.target.value)}
-				/>
-				{
-					answers.map((answer, index) => {
-						return (
-							<Grid 
-								key={answer._id} 
-								container 
-								alignItems="center" 
-								spacing={2}
-							>
-								<Grid item>
-									<TextField
-										variant="outlined"
-										margin="normal"
-										label={`Answer #${index + 1}`}
-										value={answer.value}
-										required
-										onChange={e => handleAnswersChange(e, index)}
-									/>
+	if (step === "authenticationSuccess") {
+		return (
+			<>
+			<TopHeader />
+			<Container>
+				<Typography variant="h4">
+						Create a new poll
+				</Typography>
+				<form onSubmit={handleFormSubmit}>
+					<TextField
+						variant="outlined"
+						margin="normal"
+						label="question"
+						value={question}
+						required
+						onChange={e => setQuestion(e.target.value)}
+					/>
+					{
+						answers.map((answer, index) => {
+							return (
+								<Grid 
+									key={answer._id} 
+									container 
+									alignItems="center" 
+									spacing={2}
+								>
+									<Grid item>
+										<TextField
+											variant="outlined"
+											margin="normal"
+											label={`Answer #${index + 1}`}
+											value={answer.value}
+											required
+											onChange={e => handleAnswersChange(e, index)}
+										/>
+									</Grid>
+									{index > 1 &&
+											<Grid item>
+												<ClearIcon 
+													fontSize="large" 
+													onClick={() => removeAnswer(answer._id)} 
+												/>
+											</Grid>
+									}
 								</Grid>
-								{index > 1 &&
-										<Grid item>
-											<ClearIcon 
-												fontSize="large" 
-												onClick={() => removeAnswer(answer._id)} 
-											/>
-										</Grid>
-								}
-							</Grid>
-						);
-					})
-				}
-				<div>
-					<Icon fontSize="large" onClick={addAnswer}>add_box</Icon>
-				</div>
-				<div>
-					<Button 
-						type="submit" 
-						variant="contained" 
-						color="primary"
-					>
-						Create
-					</Button>
-				</div>
-			</form>
-		</Container>
-		</>
-	);
+							);
+						})
+					}
+					<div>
+						<Icon fontSize="large" onClick={addAnswer}>add_box</Icon>
+					</div>
+					<div>
+						<Button 
+							type="submit" 
+							variant="contained" 
+							color="primary"
+						>
+							Create
+						</Button>
+					</div>
+				</form>
+			</Container>
+			</>
+		);
+	}
+
+	if (step === "formSubmitted") {
+		return <Redirect to="/" />;
+	}
 };
 PollCreator.propTypes = {
 	loggedUser: PropTypes.object.isRequired

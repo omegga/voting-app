@@ -29,26 +29,28 @@ const PollEditor = ({ match, loggedUser }) => {
 	const [userHasEditedPoll, setUserHasEditedPoll] = useState(Date.now());
 	const [userHasDeletedPoll, setUserHasDeletedPoll] = useState(false);
 
-	useEffect(() => {
+	useEffect(function checkLoggedUser() {
 		if (Object.keys(loggedUser).length === 0) {
 			setLoginError(true);
 		}
 	}, [loggedUser]);
 
 	useEffect(function authenticatePollAuthorAndFetchPollData() {
-		const config = {
-			headers: {
-				Authorization: `bearer ${loggedUser.token}`
-			}
-		};
-		axios.post(`/api/polls/${pollId}/auth`, {}, config)
-			.then(({ data: pollData }) => {
-				setPoll(pollData);
-			})
-			.catch(() => {
-				setAuthError(true);
-			});
-	}, [loggedUser.token, pollId, userHasEditedPoll]);
+		if (Object.keys(loggedUser).length > 0) {
+			const config = {
+				headers: {
+					Authorization: `bearer ${loggedUser.token}`
+				}
+			};
+			axios.post(`/api/polls/${pollId}/auth`, {}, config)
+				.then(({ data: pollData }) => {
+					setPoll(pollData);
+				})
+				.catch(() => {
+					setAuthError(true);
+				});
+		}
+	}, [loggedUser, pollId, userHasEditedPoll]);
 
 	function removeAnswer(answerId){
 		setAnswers(answers.filter(answer => answer._id !== answerId));

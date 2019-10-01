@@ -15,8 +15,8 @@ import PropTypes from "prop-types";
 const Home = ({ loggedUser, polls, userPolls, setPolls  }) => {
 	function fetchPollsList() {
 		axios.get("/api/polls")
-			.then(({ data }) => {
-				setPolls(data);
+			.then(({ data: fetchedPolls }) => {
+				setPolls(fetchedPolls);
 			});
 	}
 

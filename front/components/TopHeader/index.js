@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { setLoggedUser } from "../../reducers/actions";
 
 const TopHeader = ({ loggedUser, setLoggedUser }) => {
-	useEffect(() => {
+	useEffect(function getLoggedUser() {
 		const loggedUser = localStorage.getItem("loggedUser");
 		if (loggedUser) {
 			setLoggedUser(JSON.parse(loggedUser));

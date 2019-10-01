@@ -11,7 +11,7 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
-	useEffect(() => {
+	useEffect( function removeLoggedUserInfos() {
 		localStorage.removeItem("loggedUser");
 		setLoggedUser({});
 	}, [setLoggedUser]);
@@ -23,11 +23,11 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 		};
 		try {
 			const { data: { id, username, token } } = await axios.post("/api/login", infos);
-			const loggedUser = { id, username, token };
-			localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
-			setLoggedUser(loggedUser);
+			const user = { id, username, token };
+			localStorage.setItem("loggedUser", JSON.stringify(user));
 			setUsername("");
 			setPassword("");
+			setLoggedUser(user);
 		} catch (e) {
 			setUsername("");
 			setPassword("");

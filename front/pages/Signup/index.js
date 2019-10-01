@@ -9,19 +9,18 @@ const Signup = () => {
 	const [password, setPassword] = useState("");
 	const [users, setUsers] = useState([]);
 	const [usersListFetched, setUsersListFetched] = useState(false);
-	const [lastSubmission , setLastSubmission] = useState(null);
 	const [userHasSignedUp, setUserHasSignedUp] = useState(false);
 	const [redirectToHome, setRedirectToHome] = useState(false);
 
-	useEffect(() => {
+	useEffect(function fetchUsersList() {
 		(async function() {
 			const { data: usersList } = await axios.get("/api/users");
 			setUsers(usersList);
 			setUsersListFetched(true);
 		})();
-	}, [lastSubmission]);
+	}, []);
 
-	useEffect(() => {
+	useEffect(function redirectToHomePage() {
 		if (userHasSignedUp) {
 			setTimeout(() => {
 				setRedirectToHome(true);
@@ -38,13 +37,9 @@ const Signup = () => {
 			await axios.post("/api/users", infos);
 			setUsername("");
 			setPassword("");
-			setLastSubmission(Date.now());
 			setUserHasSignedUp(true);
 		} catch (e) {
 			console.log("error creating user");
-		} finally {
-			setUsername("");
-			setPassword("");
 		}
 	}
 
