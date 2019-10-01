@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, TextField, Button } from "@material-ui/core";
+import { Container, TextField, Button, Typography } from "@material-ui/core";
 import axios from "axios";
 import { Redirect, Link } from "react-router-dom";
 import TopHeader from "../../components/TopHeader";
@@ -46,6 +46,8 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 				<TextField
 					variant="outlined"
 					margin="normal"
+					fullWidth
+					required
 					label="Username"
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
@@ -55,6 +57,8 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 					variant="outlined"
 					margin="normal"
 					label="Password"
+					fullWidth
+					required
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					name="password"
@@ -66,13 +70,15 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 						color="primary"
 						type="submit"
 					>
-						Sign In
+						Login
 					</Button>
 				</div>
 			</form>
 			<div>
-				<Link to="/signup">
-					{"Don't have an account? Sign up"}
+				<Link to="/signup" style={{ textDecoration:"none"}}>
+					<Typography variant="body1" color="secondary">
+						{"Don't have an account? Sign up"}
+					</Typography>
 				</Link>
 			</div>
 		</Container>

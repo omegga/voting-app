@@ -74,6 +74,8 @@ const Signup = () => {
 				<TextField 
 					variant="outlined"
 					margin="normal"
+					fullWidth
+					required
 					label="Username"
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
@@ -84,6 +86,8 @@ const Signup = () => {
 					variant="outlined"
 					margin="normal"
 					label="Password"
+					fullWidth
+					required
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					name="password"

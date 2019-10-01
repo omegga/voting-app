@@ -4,11 +4,19 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
 
-const PollsList = ({ title, polls }) => {
+const useStyles = makeStyles(() => ({
+	pollQuestion: {
+		textDecoration: "none"
+	}
+}));
+
+const PollsList = ({ title, polls, createLink }) => {
+	const classes = useStyles();
 	return (
 		<>
-			<Typography variant="h4">
+			<Typography variant="h5">
 				{title}
 			</Typography>
 			<List>
@@ -16,7 +24,7 @@ const PollsList = ({ title, polls }) => {
 					polls.map((poll, index) => {
 						return (
 							<ListItem key={index}>
-								<Link to={`/polls/${poll.id}`}>
+								<Link className={classes.pollQuestion} to={createLink(poll.id)}>
 									{poll.question.includes("?") ? poll.question : `${poll.question} ?`}
 								</Link>
 							</ListItem>
@@ -30,6 +38,7 @@ const PollsList = ({ title, polls }) => {
 PollsList.propTypes = {
 	title: PropTypes.string,
 	polls: PropTypes.array,
+	createLink: PropTypes.func.isRequired
 };
 
 export default PollsList;

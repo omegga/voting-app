@@ -41,7 +41,6 @@ const PollCreator = ({ loggedUser }) => {
 		}
 
 		if (step === "checkAuth") {
-			console.log("check auth");
 			const config = {
 				headers: {
 					Authorization: `bearer ${loggedUser.token}`
