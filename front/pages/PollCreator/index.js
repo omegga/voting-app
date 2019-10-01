@@ -11,6 +11,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import TopHeader from "../../components/TopHeader";
 
 // returns a 24 character hex string
@@ -26,6 +27,13 @@ const createInitialAnswers = () => {
 		{ _id: createObjectID(), value: "" }
 	];
 };
+
+const useStyles = makeStyles(theme => ({
+	title: {
+		marginTop: theme.spacing(5),
+		marginBottom: theme.spacing(2)
+	}
+}));
 
 const PollCreator = ({ loggedUser }) => {
 	const [step, setStep] = useState("checkLogged");
@@ -85,6 +93,8 @@ const PollCreator = ({ loggedUser }) => {
 		setStep("formSubmitted");
 	}
 
+	const classes = useStyles();
+
 	if (step === "loggedUserError" || step === "authenticationError") {
 		return <Redirect to="/signin" />;
 	}
@@ -102,7 +112,7 @@ const PollCreator = ({ loggedUser }) => {
 			<>
 			<TopHeader />
 			<Container>
-				<Typography variant="h4">
+				<Typography className={classes.title} variant="h4">
 						Create a new poll
 				</Typography>
 				<form onSubmit={handleFormSubmit}>
