@@ -10,6 +10,7 @@ import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import ObjectID from "bson-objectid";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import TopHeader from "../../components/TopHeader";
 
 // returns a 24 character hex string
@@ -19,23 +20,25 @@ const createAnswer = () => {
 	return { _id: createObjectID(), value: "" };
 };
 
-const PollEditor = ({ match }) => {
+const PollEditor = ({ match, loggedUser }) => {
 	const pollId = match.params.id;
 	const [poll, setPoll] = useState(null);
 	const [loginError, setLoginError] = useState(false);
+	const [authError, setAuthError] = useState(false);
 	const [answers, setAnswers] = useState([]);
 	const [userHasEditedPoll, setUserHasEditedPoll] = useState(Date.now());
 	const [userHasDeletedPoll, setUserHasDeletedPoll] = useState(false);
 
 	useEffect(() => {
-		const userJson = localStorage.getItem("loggedUser");
-		if (!userJson) {
-			return setLoginError(true);
+		if (Object.keys(loggedUser).length === 0) {
+			setLoginError(true);
 		}
-		const user = JSON.parse(userJson);
+	}, [loggedUser]);
+
+	useEffect(function authenticatePollAuthorAndFetchPollData() {
 		const config = {
 			headers: {
-				Authorization: `bearer ${user.token}`
+				Authorization: `bearer ${loggedUser.token}`
 			}
 		};
 		axios.post(`/api/polls/${pollId}/auth`, {}, config)
@@ -43,9 +46,9 @@ const PollEditor = ({ match }) => {
 				setPoll(pollData);
 			})
 			.catch(() => {
-				setLoginError(true);
+				setAuthError(true);
 			});
-	}, [pollId, userHasEditedPoll]);
+	}, [loggedUser.token, pollId, userHasEditedPoll]);
 
 	function removeAnswer(answerId){
 		setAnswers(answers.filter(answer => answer._id !== answerId));
@@ -67,14 +70,9 @@ const PollEditor = ({ match }) => {
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
-		const userJson = localStorage.getItem("loggedUser");
-		if (!userJson) {
-			return setLoginError(true);
-		}
-		const user = JSON.parse(userJson);
 		const config = {
 			headers: {
-				Authorization: `bearer ${user.token}`
+				Authorization: `bearer ${loggedUser.token}`
 			}
 		};
 		await axios.put(`/api/polls/${pollId}`, { answers }, config);
@@ -83,14 +81,9 @@ const PollEditor = ({ match }) => {
 	}
 
 	async function deletePoll() {
-		const userJson = localStorage.getItem("loggedUser");
-		if (!userJson) {
-			return setLoginError(true);
-		}
-		const user = JSON.parse(userJson);
 		const config = {
 			headers: {
-				Authorization: `bearer ${user.token}`
+				Authorization: `bearer ${loggedUser.token}`
 			}
 		};
 		await axios.delete(`/api/polls/${pollId}`, config);
@@ -101,7 +94,7 @@ const PollEditor = ({ match }) => {
 		return <Redirect to="/" />;
 	}
 
-	if (loginError) {
+	if (authError) {
 		return (
 			<>
 			<TopHeader />
@@ -110,6 +103,10 @@ const PollEditor = ({ match }) => {
 			</Container>
 			</>
 		);
+	}
+
+	if (loginError) {
+		return <Redirect to="/signin" />;
 	}
 
 	if (!poll) {
@@ -216,7 +213,14 @@ const PollEditor = ({ match }) => {
 	);
 };
 PollEditor.propTypes = {
-	match: PropTypes.object
+	match: PropTypes.object,
+	loggedUser: PropTypes.object.isRequired,
 };
 
-export default PollEditor;
+const mapStateToProps = state => {
+	return {
+		loggedUser: state.loggedUser
+	};
+};
+
+export default connect(mapStateToProps)(PollEditor);

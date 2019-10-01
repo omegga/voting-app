@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Container } from "@material-ui/core";
 import axios from "axios";
+import { connect } from "react-redux";
 import PollResult from "../../components/PollResult";
 import PollVote from "../../components/PollVote";
 import TopHeader from "../../components/TopHeader";
 import TwitterShareButton from "../../components/TwitterShareButton";
+import { setCurrentPoll } from "../../reducers/actions";
 
-const Poll = ({ match }) => {
+const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 	const pollId = match.params.id;
-	const [poll, setPoll] = useState(null);
 	const [userHasAnswered, setUserHasAnswered] = useState(false);
 	const [lastVote, setLastVote] = useState(Date.now());
 	const [notFound, setNotFound] = useState(false);
@@ -17,12 +18,12 @@ const Poll = ({ match }) => {
 	useEffect(function fetchPoll() {
 		axios.get(`/api/polls/${pollId}`)
 			.then(({ data }) => {
-				setPoll(data);
+				setCurrentPoll(data);
 			})
 			.catch(() => {
 				setNotFound(true);
 			});
-	}, [pollId, lastVote]);
+	}, [pollId, lastVote, setCurrentPoll]);
 
 	async function handleFormSubmit(event, checkedAnswerId) {
 		event.preventDefault();
@@ -44,7 +45,7 @@ const Poll = ({ match }) => {
 		);
 	}
 	
-	if (!poll) {
+	if (Object.keys(currentPoll).length === 0) {
 		return (
 			<>
 			<TopHeader />
@@ -60,14 +61,14 @@ const Poll = ({ match }) => {
 			<TopHeader />
 			<Container>
 				{
-					poll && (
+					Object.keys(currentPoll).length > 0 && (
 						<>
-						<h1>Question: {poll.question}</h1>
-						<h2>Author: {poll.author.username}</h2>
-						<h3>Number of votes: {poll.votes.length}</h3>
-						<TwitterShareButton text={poll.question} />
-						{ !userHasAnswered && <PollVote answers={poll.answers} handleFormSubmit={handleFormSubmit} /> }
-						{ poll.votes.length > 0 && <PollResult answers={poll.answers} votes={poll.votes} /> }
+						<h1>Question: {currentPoll.question}</h1>
+						<h2>Author: {currentPoll.author.username}</h2>
+						<h3>Number of votes: {currentPoll.votes.length}</h3>
+						<TwitterShareButton text={currentPoll.question} />
+						{ !userHasAnswered && <PollVote answers={currentPoll.answers} handleFormSubmit={handleFormSubmit} /> }
+						{ currentPoll.votes.length > 0 && <PollResult answers={currentPoll.answers} votes={currentPoll.votes} /> }
 						</>
 					)
 				}
@@ -76,7 +77,19 @@ const Poll = ({ match }) => {
 	);
 };
 Poll.propTypes = {
-	match: PropTypes.object
+	match: PropTypes.object,
+	currentPoll: PropTypes.object.isRequired,
+	setCurrentPoll: PropTypes.func.isRequired
 };
 
-export default Poll;
+const mapStateToProps = state => {
+	return {
+		currentPoll: state.currentPoll
+	};
+};
+
+const mapDispatchToProps = dispatch => ({
+	setCurrentPoll: poll => dispatch(setCurrentPoll(poll))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Poll);

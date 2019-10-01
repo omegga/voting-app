@@ -3,15 +3,18 @@ import { Container, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 import { Redirect, Link } from "react-router-dom";
 import TopHeader from "../../components/TopHeader";
+import { setLoggedUser } from "../../reducers/actions";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-const Signin = () => {
+const Signin = ({ loggedUser, setLoggedUser }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const [isLogged, setIsLogged] = useState(false);
 
 	useEffect(() => {
 		localStorage.removeItem("loggedUser");
-	}, []);
+		setLoggedUser({});
+	}, [setLoggedUser]);
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
@@ -20,17 +23,18 @@ const Signin = () => {
 		};
 		try {
 			const { data: { id, username, token } } = await axios.post("/api/login", infos);
-			localStorage.setItem("loggedUser", JSON.stringify({ id, username, token }));
+			const loggedUser = { id, username, token };
+			localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+			setLoggedUser(loggedUser);
 			setUsername("");
 			setPassword("");
-			setIsLogged(true);
 		} catch (e) {
 			setUsername("");
 			setPassword("");
 		}
 	}
 
-	if (isLogged) {
+	if (Object.keys(loggedUser).length > 0) {
 		return <Redirect to="/" />;
 	}
 
@@ -75,5 +79,19 @@ const Signin = () => {
 		</>
 	);
 };
+Signin.propTypes = {
+	loggedUser: PropTypes.object.isRequired,
+	setLoggedUser: PropTypes.func.isRequired
+};
 
-export default Signin;
+const mapStateToProps = state => {
+	return {
+		loggedUser: state.loggedUser
+	};
+};
+
+const mapDispatchToProps = dispatch => ({
+	setLoggedUser: loggedUser => dispatch(setLoggedUser(loggedUser))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Signin);

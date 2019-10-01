@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
@@ -7,59 +7,28 @@ import ButtonLink from "../../components/ButtonLink";
 import PollsList from "../../components/PollsList";
 import UserPollsList from "../../components/UserPollsList";
 import TopHeader from "../../components/TopHeader";
+import { connect } from "react-redux";
+import { setPolls } from "../../reducers/actions";
+import PropTypes from "prop-types";
 
-const Home = () => {
-	const [userLoggedStatusFetched, setUserLoggedStatusFetched] = useState(false);
-	const [user, setUser] = useState(null);
-	const [polls, setPolls] = useState([]);
-	const [userPolls, setUserPolls] = useState([]);
-	const [lastPollsFetch, setLastPollsFetched] = useState(Date.now());
 
-	useEffect(() => {
-		const loggedUser = localStorage.getItem("loggedUser");
-		setUserLoggedStatusFetched(true);
-		if (loggedUser) {
-			setUser(JSON.parse(loggedUser));
-		}
-	}, []);
-
-	useEffect(() => {
-		if (userLoggedStatusFetched && user) {
-			const config = {
-				headers: {
-					Authorization: `bearer ${user.token}`
-				}
-			};
-			axios.get(`/api/users/${user.id}/polls`, config)
-				.then(({ data }) => setUserPolls(data));
-		}
-	}, [user, userLoggedStatusFetched, lastPollsFetch]);
-
-	useEffect(() => {
+const Home = ({ loggedUser, polls, userPolls, setPolls  }) => {
+	function fetchPollsList() {
 		axios.get("/api/polls")
 			.then(({ data }) => {
 				setPolls(data);
 			});
-	}, [lastPollsFetch]);
-
-	function fetchPollsList() {
-		setLastPollsFetched(Date.now());
 	}
 
-	if (!userLoggedStatusFetched) {
-		return null;
-	}
+	useEffect(fetchPollsList, []);
 
 	return (
 		<>
 		<TopHeader />
 		<Container>
-			{ user
+			{ Object.keys(loggedUser).length > 0
 				? (
 					<>
-						<div>
-							Logged as: {user.username} 
-						</div>
 						<div>
 							<Link 
 								style={{ textDecoration: "none"}}
@@ -96,5 +65,23 @@ const Home = () => {
 		</>
 	);
 };
+Home.propTypes = {
+	loggedUser: PropTypes.object.isRequired,
+	polls: PropTypes.array.isRequired,
+	userPolls: PropTypes.array.isRequired,
+	setPolls: PropTypes.func.isRequired
+};
 
-export default Home;
+const mapStateToProps = state => {
+	return {
+		loggedUser: state.loggedUser,
+		polls: state.polls,
+		userPolls: state.polls.filter(poll => poll.author === state.loggedUser.id)
+	};
+};
+
+const mapDispatchToProps = dispatch => ({
+	setPolls: polls => dispatch(setPolls(polls))
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(Home);

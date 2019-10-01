@@ -20,7 +20,6 @@ const App = () => {
 				<Route path="/polls/:id" component={Poll} />
 			</Switch>
 		</Router>
-		
 	);
 };
 

@@ -10,6 +10,7 @@ import ObjectID from "bson-objectid";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import TopHeader from "../../components/TopHeader";
 
 // returns a 24 character hex string
@@ -26,32 +27,33 @@ const createInitialAnswers = () => {
 	];
 };
 
-const PollCreator = () => {
+const PollCreator = ({ loggedUser }) => {
+	const [isLoggedUserTokenValid, setIsLoggedUserTokenValid] = useState(false);
 	const [loginError, setLoginError] = useState(false);
-	const [user, setUser] = useState(null);
 	const [question, setQuestion] = useState("");
 	const [answers, setAnswers] = useState(createInitialAnswers);
 	const [userHasSubmittedForm, setUserHasSubmittedForm] = useState(false);
 
 	useEffect(() => {
-		const loggedUserJson = localStorage.getItem("loggedUser");
-		if (!loggedUserJson) {
-			return setLoginError(true);
+		if (Object.keys(loggedUser).length === 0) {
+			setLoginError(true);
 		}
-		const loggedUser = JSON.parse(loggedUserJson);
-		const config = {
-			headers: {
-				Authorization: `bearer ${loggedUser.token}`
-			}
-		};
-		axios.post("/api/auth", {}, config)
-			.then(() => {
-				setUser(loggedUser);
-			})
-			.catch(() => {
-				setLoginError(true);
-			});
-	}, []);
+	}, [loggedUser]);
+
+	useEffect(() => {
+		if (Object.keys(loggedUser).length > 0 && !isLoggedUserTokenValid) {
+			const config = {
+				headers: {
+					Authorization: `bearer ${loggedUser.token}`
+				}
+			};
+			axios.post("/api/auth", {}, config)
+				.then(() => setIsLoggedUserTokenValid(true))
+				.catch(() => {
+					setLoginError(true);
+				});
+		}
+	}, [loggedUser, isLoggedUserTokenValid]);
 
 	function addAnswer() {
 		setAnswers([...answers, createAnswer()]);
@@ -75,7 +77,7 @@ const PollCreator = () => {
 		event.preventDefault();
 		const config = {
 			headers: {
-				Authorization: `bearer ${user.token}`
+				Authorization: `bearer ${loggedUser.token}`
 			}
 		};
 		await axios.post("/api/polls", { question, answers }, config);
@@ -92,8 +94,12 @@ const PollCreator = () => {
 		return <Redirect to="/" />;
 	}
 
-	if (!user) {
-		return null;
+	if (Object.keys(loggedUser).length > 0 && !isLoggedUserTokenValid) {
+		return (
+			<Container>
+				<span>Authenticating user...</span>
+			</Container>
+		);
 	}
 
 	return (
@@ -161,7 +167,13 @@ const PollCreator = () => {
 	);
 };
 PollCreator.propTypes = {
-	userToken: PropTypes.string,
+	loggedUser: PropTypes.object.isRequired
 };
 
-export default PollCreator;
+const mapStateToProps = state => {
+	return {
+		loggedUser: state.loggedUser
+	};
+};
+
+export default connect(mapStateToProps)(PollCreator);
