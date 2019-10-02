@@ -6,27 +6,13 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import ClearIcon from "@material-ui/icons/Clear";
-import ObjectID from "bson-objectid";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import TopHeader from "../../components/TopHeader";
-
-// returns a 24 character hex string
-const createObjectID = () => ObjectID().str;
-
-const createAnswer = () => {
-	return { _id: createObjectID(), value: "" };
-};
-
-const createInitialAnswers = () => {
-	return [
-		{ _id: createObjectID(), value: "" },
-		{ _id: createObjectID(), value: "" }
-	];
-};
+import { createEmptyAnswer, createInitialAnswers } from "../../utils";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -63,7 +49,7 @@ const PollCreator = ({ loggedUser }) => {
 	}, [loggedUser, step]);
 
 	function addAnswer() {
-		setAnswers([...answers, createAnswer()]);
+		setAnswers([...answers, createEmptyAnswer()]);
 	}
 
 	function handleAnswersChange(event, index) {

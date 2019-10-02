@@ -8,18 +8,11 @@ import Grid from "@material-ui/core/Grid";
 import ClearIcon from "@material-ui/icons/Clear";
 import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
-import ObjectID from "bson-objectid";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import TopHeader from "../../components/TopHeader";
-
-// returns a 24 character hex string
-const createObjectID = () => ObjectID().str;
-
-const createAnswer = () => {
-	return { _id: createObjectID(), value: "" };
-};
+import { createEmptyAnswer } from "../../utils";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -75,7 +68,7 @@ const PollEditor = ({ match, loggedUser }) => {
 	}
 
 	function addAnswer() {
-		setAnswers([...answers, createAnswer()]);
+		setAnswers([...answers, createEmptyAnswer()]);
 	}
 
 	async function handleFormSubmit(event) {
