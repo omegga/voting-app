@@ -42,7 +42,11 @@ const pollSchema = new mongoose.Schema({
 			return val.length >= 2;
 		}
 	},
-	votes: [voteSchema]
+	votes: [voteSchema],
+	created: {
+		type: Date,
+		default: Date.now
+	}
 });
 pollSchema.set("toJSON", {
 	virtuals: true

@@ -3,7 +3,6 @@ import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
 import PollsList from "../../components/PollsList";
-import UserPollsList from "../../components/UserPollsList";
 import TopHeader from "../../components/TopHeader";
 import { connect } from "react-redux";
 import { setPolls } from "../../reducers/actions";
@@ -32,13 +31,32 @@ const Home = ({ polls, userPolls, setPolls  }) => {
 		<>
 		<TopHeader />
 		<Container>
-			<Button className={classes.refreshList} onClick={fetchPollsList} size="small" variant="contained" color="primary">Refresh List</Button>
-			{userPolls.length > 0 && (
-				<UserPollsList title="My Polls" polls={userPolls} createLink={id => `/polls/${id}/edit`} />
-			)}
-			{polls.length > 0 && (
-				<PollsList title="Polls List" polls={polls} createLink={id => `/polls/${id}`} />
-			)}
+			{polls.length > 0 &&
+			(	<>
+				<Button 
+					className={classes.refreshList} 
+					onClick={fetchPollsList} 
+					size="small" 
+					variant="contained" 
+					color="primary"
+				>
+					Refresh Lists
+				</Button>
+					{ userPolls.length > 0 && 
+						<PollsList 
+							title="My Polls - Edit" 
+							polls={userPolls} 
+							createLink={id => `/polls/${id}/edit`} 
+						/> 
+					}
+				<PollsList 
+					title="Polls List - Vote" 
+					polls={polls} 
+					createLink={id => `/polls/${id}`} 
+				/>
+				</>
+			)
+			}
 		</Container>
 		</>
 	);
@@ -50,9 +68,13 @@ Home.propTypes = {
 };
 
 const mapStateToProps = state => {
+	const polls = [...state.polls]
+		.sort(
+			(pollA, pollB) => Date.parse(pollB.created) - Date.parse(pollA.created)
+		);
 	return {
-		polls: state.polls,
-		userPolls: state.polls.filter(poll => poll.author === state.loggedUser.id)
+		polls,
+		userPolls: polls.filter(poll => poll.author === state.loggedUser.id)
 	};
 };
 

@@ -5,6 +5,7 @@ import ListItem from "@material-ui/core/ListItem";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
 	pollQuestion: {
@@ -22,10 +23,11 @@ const PollsList = ({ title, polls, createLink }) => {
 			<List>
 				{
 					polls.map((poll, index) => {
+						const fromNow = moment(poll.created).fromNow();
 						return (
 							<ListItem key={index}>
 								<Link className={classes.pollQuestion} to={createLink(poll.id)}>
-									{poll.question.includes("?") ? poll.question : `${poll.question} ?`}
+									{poll.question.includes("?") ? `${poll.question} - ${fromNow}` : `${poll.question} ? - ${fromNow}`}
 								</Link>
 							</ListItem>
 						);
