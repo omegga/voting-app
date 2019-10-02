@@ -4,7 +4,8 @@ import "./twitter.js";
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 import rootReducer from "./reducers";
 import App from "./App";
 
@@ -15,7 +16,7 @@ const initialState = {
 	currentPoll: {}
 };
 
-const store = createStore(rootReducer, initialState);
+const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
 
 const root = document.getElementById("root");
 if (root !== null) {

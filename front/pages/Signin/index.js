@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography } from "@material-ui/core";
 import { Redirect, Link } from "react-router-dom";
 import TopHeader from "../../components/TopHeader";
-import { setLoggedUser } from "../../reducers/actions";
+import { loginAndSetLoggedUser, setLoggedUser } from "../../reducers/actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { login } from "../../utils";
 
-const Signin = ({ loggedUser, setLoggedUser }) => {
+const Signin = ({ loggedUser, setLoggedUser, loginAndSetLoggedUser }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -19,12 +18,9 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 	async function handleFormSubmit(event) {
 		event.preventDefault();
 		try {
-			const { id, username, token } = await login(username, password);
-			const user = { id, username, token };
-			localStorage.setItem("loggedUser", JSON.stringify(user));
 			setUsername("");
 			setPassword("");
-			setLoggedUser(user);
+			loginAndSetLoggedUser(username, password);
 		} catch (e) {
 			setUsername("");
 			setPassword("");
@@ -84,7 +80,8 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 };
 Signin.propTypes = {
 	loggedUser: PropTypes.object.isRequired,
-	setLoggedUser: PropTypes.func.isRequired
+	setLoggedUser: PropTypes.func.isRequired,
+	loginAndSetLoggedUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -94,7 +91,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-	setLoggedUser: loggedUser => dispatch(setLoggedUser(loggedUser))
+	setLoggedUser: user => dispatch(setLoggedUser(user)),
+	loginAndSetLoggedUser: (username, password) => {
+		dispatch(loginAndSetLoggedUser(username, password));
+	}
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signin);

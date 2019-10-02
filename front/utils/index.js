@@ -15,7 +15,7 @@ export const createInitialAnswers = () => {
 	];
 };
 
-export const getPolls = () => {
+export const getPollsRequest = () => {
 	return axios.get("/api/polls").then(({ data: polls }) => polls);
 };
 

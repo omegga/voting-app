@@ -4,26 +4,18 @@ import Button from "@material-ui/core/Button";
 import PollsList from "../../components/PollsList";
 import TopHeader from "../../components/TopHeader";
 import { connect } from "react-redux";
-import { setPolls } from "../../reducers/actions";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { getPolls } from "../../utils";
-
+import { getPolls } from "../../reducers/actions";
 const useStyles = makeStyles(theme => ({
 	refreshList: {
 		margin: theme.spacing(3, 0, 2),
 	}
 }));
 
-const Home = ({ polls, userPolls, setPolls  }) => {
-	function fetchPollsList() {
-		getPolls()
-			.then(fetchedPolls => {
-				setPolls(fetchedPolls);
-			});
-	}
+const Home = ({ polls, userPolls, getPolls  }) => {
 
-	useEffect(fetchPollsList, []);
+	useEffect(getPolls, []);
 
 	const classes = useStyles();
 
@@ -35,7 +27,7 @@ const Home = ({ polls, userPolls, setPolls  }) => {
 			(	<>
 				<Button 
 					className={classes.refreshList} 
-					onClick={fetchPollsList} 
+					onClick={getPolls} 
 					size="small" 
 					variant="contained" 
 					color="primary"
@@ -64,7 +56,7 @@ const Home = ({ polls, userPolls, setPolls  }) => {
 Home.propTypes = {
 	polls: PropTypes.array.isRequired,
 	userPolls: PropTypes.array.isRequired,
-	setPolls: PropTypes.func.isRequired
+	getPolls: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -79,7 +71,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-	setPolls: polls => dispatch(setPolls(polls))
+	getPolls() {
+		dispatch(getPolls());
+	}
 });
 
-export default connect(mapStateToProps,mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
