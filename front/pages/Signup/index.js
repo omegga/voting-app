@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button } from "@material-ui/core";
-import axios from "axios";
 import { Redirect } from "react-router-dom";
 import TopHeader from "../../components/TopHeader";
+import { getUsers, createUser } from "../../utils";
 
 const Signup = () => {
 	const [username, setUsername] = useState("");
@@ -14,7 +14,7 @@ const Signup = () => {
 
 	useEffect(function fetchUsersList() {
 		(async function() {
-			const { data: usersList } = await axios.get("/api/users");
+			const usersList = await getUsers();
 			setUsers(usersList);
 			setUsersListFetched(true);
 		})();
@@ -30,11 +30,8 @@ const Signup = () => {
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
-		const infos = {
-			username, password
-		};
 		try {
-			await axios.post("/api/users", infos);
+			await createUser(username, password);
 			setUsername("");
 			setPassword("");
 			setUserHasSignedUp(true);

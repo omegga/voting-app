@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -12,7 +11,12 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import TopHeader from "../../components/TopHeader";
-import { createEmptyAnswer } from "../../utils";
+import { 
+	createEmptyAnswer, 
+	authenticatePollCreator,
+	addAnswersToPoll, 
+	deletePollById,
+} from "../../utils";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -38,14 +42,9 @@ const PollEditor = ({ match, loggedUser }) => {
 
 	useEffect(function authenticatePollAuthorAndFetchPollData() {
 		if (Object.keys(loggedUser).length > 0) {
-			const config = {
-				headers: {
-					Authorization: `bearer ${loggedUser.token}`
-				}
-			};
-			axios.post(`/api/polls/${pollId}/auth`, {}, config)
-				.then(({ data: pollData }) => {
-					setPoll(pollData);
+			authenticatePollCreator(loggedUser.token, pollId)
+				.then((poll) => {
+					setPoll(poll);
 				})
 				.catch(() => {
 					setAuthError(true);
@@ -73,23 +72,13 @@ const PollEditor = ({ match, loggedUser }) => {
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
-		const config = {
-			headers: {
-				Authorization: `bearer ${loggedUser.token}`
-			}
-		};
-		await axios.put(`/api/polls/${pollId}`, { answers }, config);
+		addAnswersToPoll(loggedUser.token, pollId, answers);
 		setAnswers([]);
 		setUserHasEditedPoll(Date.now());
 	}
 
 	async function deletePoll() {
-		const config = {
-			headers: {
-				Authorization: `bearer ${loggedUser.token}`
-			}
-		};
-		await axios.delete(`/api/polls/${pollId}`, config);
+		deletePollById(loggedUser.token, pollId);
 		setUserHasDeletedPoll(true);
 	}
 

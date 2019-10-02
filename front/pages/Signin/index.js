@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography } from "@material-ui/core";
-import axios from "axios";
 import { Redirect, Link } from "react-router-dom";
 import TopHeader from "../../components/TopHeader";
 import { setLoggedUser } from "../../reducers/actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { login } from "../../utils";
 
 const Signin = ({ loggedUser, setLoggedUser }) => {
 	const [username, setUsername] = useState("");
@@ -18,11 +18,8 @@ const Signin = ({ loggedUser, setLoggedUser }) => {
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
-		const infos = {
-			username, password
-		};
 		try {
-			const { data: { id, username, token } } = await axios.post("/api/login", infos);
+			const { id, username, token } = await login(username, password);
 			const user = { id, username, token };
 			localStorage.setItem("loggedUser", JSON.stringify(user));
 			setUsername("");

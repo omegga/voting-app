@@ -6,13 +6,17 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import ClearIcon from "@material-ui/icons/Clear";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import TopHeader from "../../components/TopHeader";
-import { createEmptyAnswer, createInitialAnswers } from "../../utils";
+import { 
+	createEmptyAnswer, 
+	createInitialAnswers, 
+	authenticateUser,
+	createPoll
+} from "../../utils";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -35,12 +39,7 @@ const PollCreator = ({ loggedUser }) => {
 		}
 
 		if (step === "checkAuth") {
-			const config = {
-				headers: {
-					Authorization: `bearer ${loggedUser.token}`
-				}
-			};
-			axios.post("/api/auth", {}, config)
+			authenticateUser(loggedUser.token)
 				.then(() => setStep("authenticationSuccess"))
 				.catch(() => {
 					setStep("authenticationError");
@@ -68,12 +67,7 @@ const PollCreator = ({ loggedUser }) => {
 
 	async function handleFormSubmit(event) {
 		event.preventDefault();
-		const config = {
-			headers: {
-				Authorization: `bearer ${loggedUser.token}`
-			}
-		};
-		await axios.post("/api/polls", { question, answers }, config);
+		await createPoll(loggedUser.token, { question, answers });
 		setQuestion("");
 		setAnswers(createInitialAnswers);
 		setStep("formSubmitted");

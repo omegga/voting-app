@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
-import axios from "axios";
 import PollsList from "../../components/PollsList";
 import TopHeader from "../../components/TopHeader";
 import { connect } from "react-redux";
 import { setPolls } from "../../reducers/actions";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { getPolls } from "../../utils";
 
 const useStyles = makeStyles(theme => ({
 	refreshList: {
@@ -17,8 +17,8 @@ const useStyles = makeStyles(theme => ({
 
 const Home = ({ polls, userPolls, setPolls  }) => {
 	function fetchPollsList() {
-		axios.get("/api/polls")
-			.then(({ data: fetchedPolls }) => {
+		getPolls()
+			.then(fetchedPolls => {
 				setPolls(fetchedPolls);
 			});
 	}

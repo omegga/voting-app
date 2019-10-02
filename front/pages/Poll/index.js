@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Container, Typography } from "@material-ui/core";
-import axios from "axios";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import PollResult from "../../components/PollResult";
@@ -9,6 +8,7 @@ import PollVote from "../../components/PollVote";
 import TopHeader from "../../components/TopHeader";
 import TwitterShareButton from "../../components/TwitterShareButton";
 import { setCurrentPoll } from "../../reducers/actions";
+import { getPollById, addVoteOnPoll } from "../../utils";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -24,9 +24,9 @@ const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 	const [notFound, setNotFound] = useState(false);
 
 	useEffect(function fetchPoll() {
-		axios.get(`/api/polls/${pollId}`)
-			.then(({ data }) => {
-				setCurrentPoll(data);
+		getPollById(pollId)
+			.then(poll => {
+				setCurrentPoll(poll);
 			})
 			.catch(() => {
 				setNotFound(true);
@@ -35,9 +35,7 @@ const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 
 	async function handleFormSubmit(event, checkedAnswerId) {
 		event.preventDefault();
-		await axios.put(`/api/polls/${pollId}/vote`, {
-			answerId: checkedAnswerId
-		});
+		await addVoteOnPoll(pollId, checkedAnswerId);
 		setLastVote(Date.now());
 		setUserHasAnswered(true);
 	}
