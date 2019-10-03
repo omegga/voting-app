@@ -58,9 +58,12 @@
   },
   "scripts": {
     "client:dev": "webpack-dev-server --open --config webpack.dev.js",
-    "client:prod": "webpack --config webpack.prod.js",
+		"client:prod": "webpack --config webpack.prod.js",
+		"deploy": "git push heroku master",
+		"heroku-postbuild": "npm run client:prod",
     "server:dev": "NODE_ENV=development nodemon server/index.js --exec 'eslint --fix server && node'",
-    "server:prod": "NODE_ENV=production node server/index.js"
+		"server:prod": "NODE_ENV=production node server/index.js",
+		"start": "npm run server:prod"
   },
   "husky": {
     "hooks": {
