@@ -1,0 +1,9 @@
+{
+	"Server": {
+		"apiBasePath": "/api",
+		"usersPath": "/users",
+		"loginPath": "/login",
+		"pollsPath": "/polls",
+		"authPath": "/auth"
+	}
+}

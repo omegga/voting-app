@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const config = require("config");
 const apiRouter = require("./api/apiRouter");
 
 
@@ -28,7 +29,7 @@ function requestLogger(req, res, next) {
 function loadApp(app) {
 	app.use(express.json());
 	app.use(requestLogger);
-	app.use("/api", apiRouter);
+	app.use(config.get("Server.apiBasePath"), apiRouter);
 	app.use(express.static(path.join(__dirname, "../build")));
 	const indexHtmlFile = path.join(__dirname, "../build/index.html");
 	app.use("*", (req, res) => {
