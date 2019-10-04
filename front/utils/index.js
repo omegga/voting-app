@@ -15,17 +15,23 @@ export const createInitialAnswers = () => {
 	];
 };
 
+const API_BASE_PATH = "/api";
+const POLLS_BASE_PATH = `${API_BASE_PATH}/polls`;
+const AUTH_BASE_PATH = `${API_BASE_PATH}/auth`;
+const LOGIN_BASE_PATH = `${API_BASE_PATH}/login`;
+const USERS_BASE_PATH = `${API_BASE_PATH}/users`;
+
 export const getPollsRequest = () => {
-	return axios.get("/api/polls").then(({ data: polls }) => polls);
+	return axios.get(`${POLLS_BASE_PATH}`).then(({ data: polls }) => polls);
 };
 
 export const getPollById = pollId => {
-	return axios.get(`/api/polls/${pollId}`)
+	return axios.get(`${POLLS_BASE_PATH}/${pollId}`)
 		.then(({ data: poll }) => poll);
 };
 
 export const addVoteOnPoll = (pollId, answerId) => {
-	return axios.put(`/api/polls/${pollId}/vote`, { answerId });
+	return axios.put(`${POLLS_BASE_PATH}/${pollId}/vote`, { answerId });
 };
 
 export const authenticateUser = token => {
@@ -34,7 +40,7 @@ export const authenticateUser = token => {
 			Authorization: `bearer ${token}`
 		}
 	};
-	return axios.post("/api/auth", {}, config);
+	return axios.post(AUTH_BASE_PATH, {}, config);
 };
 
 export const createPoll = (token, body) => {
@@ -43,7 +49,7 @@ export const createPoll = (token, body) => {
 			Authorization: `bearer ${token}`
 		}
 	};
-	return axios.post("/api/polls", {
+	return axios.post(POLLS_BASE_PATH, {
 		question: body.question,
 		answers: body.answers
 	}, config);
@@ -56,7 +62,7 @@ export const authenticatePollCreator = (token, pollId) => {
 		}
 	};
 	return axios
-		.post(`/api/polls/${pollId}/auth`, {}, config)
+		.post(`${POLLS_BASE_PATH}/${pollId}/auth`, {}, config)
 		.then(({ data: poll }) => poll);
 };
 
@@ -66,7 +72,7 @@ export const addAnswersToPoll = (token, pollId, answers) => {
 			Authorization: `bearer ${token}`
 		}
 	};
-	return axios.put(`/api/polls/${pollId}`, { answers }, config);
+	return axios.put(`${POLLS_BASE_PATH}/${pollId}`, { answers }, config);
 };
 
 export const deletePollById = (token, pollId) => {
@@ -75,23 +81,23 @@ export const deletePollById = (token, pollId) => {
 			Authorization: `bearer ${token}`
 		}
 	};
-	return axios.delete(`/api/polls/${pollId}`, config);
+	return axios.delete(`${POLLS_BASE_PATH}/${pollId}`, config);
 };
 
 export const login = (username, password) => {
 	return axios
-		.post("/api/login", { username, password })
-		.then(({ data: { id, username, token } }) => ({ 
-			id, 
-			username, 
+		.post(LOGIN_BASE_PATH, { username, password })
+		.then(({ data: { id, username, token } }) => ({
+			id,
+			username,
 			token
 		}));
 };
 
 export const getUsers = () => {
-	return axios.get("/api/users").then(({ data: usersList }) => usersList);
+	return axios.get(USERS_BASE_PATH).then(({ data: usersList }) => usersList);
 };
 
 export const createUser = (username, password) => {
-	return axios.post("/api/users", { username, password });
+	return axios.post(USERS_BASE_PATH, { username, password });
 };
