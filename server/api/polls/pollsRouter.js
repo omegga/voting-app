@@ -2,6 +2,7 @@ const express = require("express");
 const Poll = require("./pollsModel");
 const authMiddleWare = require("../../middleware/auth");
 const { notifyPollMiddleware, notifyPollEditMiddleware } = require("../../middleware/notify");
+const { emailServiceActivatedMiddleware } = require("../../middleware/service");
 
 const router = express.Router();
 router.route("/")
@@ -26,7 +27,7 @@ router.route("/")
 				next(exception);
 			}
 		},
-		notifyPollMiddleware
+		[ emailServiceActivatedMiddleware, notifyPollMiddleware ]
 	);
 router.post("/:id/auth", authMiddleWare, async function verifyUser(req, res, next) {
 	try {
@@ -69,7 +70,7 @@ router.route("/:id")
 				next(exception);
 			}
 		},
-		notifyPollEditMiddleware
+		[ emailServiceActivatedMiddleware, notifyPollEditMiddleware ]
 	)
 	.delete(authMiddleWare, async function deletePoll(req, res, next) {
 		try {

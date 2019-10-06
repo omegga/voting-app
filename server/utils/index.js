@@ -72,5 +72,5 @@ async function sendSignupDetailsMail(body) {
 module.exports = { 
 	sendPollDetailsMail, 
 	sendPollEditDetailsMail, 
-	sendSignupDetailsMail 
+	sendSignupDetailsMail
 };

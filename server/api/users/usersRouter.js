@@ -4,6 +4,7 @@ const User = require("./usersModel");
 const Poll = require("../polls/pollsModel");
 const authMiddleware = require("../../middleware/auth");
 const { notifySignupMiddleware } = require("../../middleware/notify");
+const { emailServiceActivatedMiddleware } = require("../../middleware/service");
 
 const SALT_ROUNDS = 10;
 
@@ -49,7 +50,7 @@ router.route("/")
 				next(err);
 			}
 		},
-		notifySignupMiddleware
+		[ emailServiceActivatedMiddleware, notifySignupMiddleware ]
 	);
 
 module.exports = router;
