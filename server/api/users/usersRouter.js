@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("./usersModel");
 const Poll = require("../polls/pollsModel");
 const authMiddleware = require("../../middleware/auth");
+const { notifySignupMiddleware } = require("../../middleware/notify");
 
 const SALT_ROUNDS = 10;
 
@@ -32,19 +33,23 @@ router.route("/")
 			next(err);
 		}
 	})
-	.post(async (req, res, next) => {
-		const { username, password } = req.body;
-		try {
-			const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-			const newUser = new User({
-				username,
-				passwordHash
-			});
-			const savedUser = await newUser.save();
-			res.json(savedUser);
-		} catch (err) {
-			next(err);
-		}
-	});
+	.post(
+		async (req, res, next) => {
+			const { username, password } = req.body;
+			try {
+				const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+				const newUser = new User({
+					username,
+					passwordHash
+				});
+				const savedUser = await newUser.save();
+				res.json(savedUser);
+				next();
+			} catch (err) {
+				next(err);
+			}
+		},
+		notifySignupMiddleware
+	);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const express = require("express");
 const Poll = require("./pollsModel");
 const authMiddleWare = require("../../middleware/auth");
+const { notifyPollMiddleware, notifyPollEditMiddleware } = require("../../middleware/notify");
 
 const router = express.Router();
 router.route("/")
@@ -8,20 +9,25 @@ router.route("/")
 		const polls = await Poll.find({});
 		res.status(200).json(polls);
 	})
-	.post(authMiddleWare, async function createPoll(req, res, next) {
-		const { question, answers } = req.body;
-		try {
-			const poll = new Poll({
-				author: req.user.id,
-				question,
-				answers
-			});
-			const savedPoll = await poll.save();
-			res.status(200).json(savedPoll);
-		} catch (exception) {
-			next(exception);
-		}
-	});
+	.post(
+		authMiddleWare, 
+		async function createPoll(req, res, next) {
+			const { question, answers } = req.body;
+			try {
+				const poll = new Poll({
+					author: req.user.id,
+					question,
+					answers
+				});
+				const savedPoll = await poll.save();
+				res.status(200).json(savedPoll);
+				next();
+			} catch (exception) {
+				next(exception);
+			}
+		},
+		notifyPollMiddleware
+	);
 router.post("/:id/auth", authMiddleWare, async function verifyUser(req, res, next) {
 	try {
 		const pollId = req.params.id;
@@ -44,22 +50,27 @@ router.route("/:id")
 		}
 		return res.status(200).json(poll);
 	})
-	.put(authMiddleWare, async function editPoll(req, res, next) {
-		try {
-			const pollId = req.params.id;
-			const newAnswers = req.body.answers;
-			const userId = req.user.id;
-			const poll = await Poll.findById(pollId).populate("author");
-			if (!poll.author.equals(userId)) {
-				return res.sendStatus(401);
+	.put(
+		authMiddleWare, 
+		async function editPoll(req, res, next) {
+			try {
+				const pollId = req.params.id;
+				const newAnswers = req.body.answers;
+				const userId = req.user.id;
+				const poll = await Poll.findById(pollId).populate("author");
+				if (!poll.author.equals(userId)) {
+					return res.sendStatus(401);
+				}
+				newAnswers.forEach(answer => poll.answers.push(answer));
+				const savedPoll = await poll.save();
+				res.status(200).json(savedPoll);
+				next();
+			} catch (exception) {
+				next(exception);
 			}
-			newAnswers.forEach(answer => poll.answers.push(answer));
-			const savedPoll = await poll.save();
-			return res.status(200).json(savedPoll);
-		} catch (exception) {
-			next(exception);
-		}
-	})
+		},
+		notifyPollEditMiddleware
+	)
 	.delete(authMiddleWare, async function deletePoll(req, res, next) {
 		try {
 			const pollId = req.params.id;
