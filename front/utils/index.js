@@ -1,5 +1,4 @@
 import ObjectID from "bson-objectid";
-import axios from "axios";
 
 // returns a 24 character hex string
 const createObjectID = () => ObjectID().str;
@@ -22,82 +21,116 @@ const LOGIN_BASE_PATH = `${API_BASE_PATH}/login`;
 const USERS_BASE_PATH = `${API_BASE_PATH}/users`;
 
 export const getPollsRequest = () => {
-	return axios.get(`${POLLS_BASE_PATH}`).then(({ data: polls }) => polls);
+	return fetch(POLLS_BASE_PATH)
+		.then(res => res.json());
 };
 
 export const getPollById = pollId => {
-	return axios.get(`${POLLS_BASE_PATH}/${pollId}`)
-		.then(({ data: poll }) => poll);
+	return fetch(`${POLLS_BASE_PATH}/${pollId}`)
+		.then(res => res.json());
 };
 
 export const addVoteOnPoll = (pollId, answerId) => {
-	return axios.put(`${POLLS_BASE_PATH}/${pollId}/vote`, { answerId });
+	const init = {
+		method: "PUT",
+		headers: {
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ answerId })
+	};
+	return fetch(`${POLLS_BASE_PATH}/${pollId}/vote`, init);
 };
 
 export const authenticateUser = token => {
-	const config = {
+	const init = {
+		method: "POST",
 		headers: {
 			Authorization: `bearer ${token}`
 		}
 	};
-	return axios.post(AUTH_BASE_PATH, {}, config);
+	return fetch(AUTH_BASE_PATH, init);
 };
 
 export const createPoll = (token, body) => {
-	const config = {
+	const init = {
+		method: "POST",
 		headers: {
-			Authorization: `bearer ${token}`
-		}
+			"Authorization": `bearer ${token}`,
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			question: body.question,
+			answers: body.answers
+		})
 	};
-	return axios.post(POLLS_BASE_PATH, {
-		question: body.question,
-		answers: body.answers
-	}, config);
+	return fetch(POLLS_BASE_PATH, init);
 };
 
 export const authenticatePollCreator = (token, pollId) => {
-	const config = {
+	const init = {
+		method: "POST",
 		headers: {
-			Authorization: `bearer ${token}`
+			"Authorization": `bearer ${token}`,
+			"Accept": "application/json"
 		}
 	};
-	return axios
-		.post(`${POLLS_BASE_PATH}/${pollId}/auth`, {}, config)
-		.then(({ data: poll }) => poll);
+	return fetch(`${POLLS_BASE_PATH}/${pollId}/auth`, init)
+		.then(res => res.json());
 };
 
 export const addAnswersToPoll = (token, pollId, answers) => {
-	const config = {
+	const init = {
+		method: "PUT",
 		headers: {
-			Authorization: `bearer ${token}`
-		}
+			"Authorization": `bearer ${token}`,
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ answers })
 	};
-	return axios.put(`${POLLS_BASE_PATH}/${pollId}`, { answers }, config);
+	return fetch(`${POLLS_BASE_PATH}/${pollId}`, init);
 };
 
 export const deletePollById = (token, pollId) => {
-	const config = {
+	const init = {
+		method: "DELETE",
 		headers: {
-			Authorization: `bearer ${token}`
+			"Authorization": `bearer ${token}`,
+			"Accept": "application/json",
 		}
 	};
-	return axios.delete(`${POLLS_BASE_PATH}/${pollId}`, config);
+	return fetch(`${POLLS_BASE_PATH}/${pollId}`, init);
 };
 
 export const login = (username, password) => {
-	return axios
-		.post(LOGIN_BASE_PATH, { username, password })
-		.then(({ data: { id, username, token } }) => ({
-			id,
-			username,
-			token
-		}));
+	const init = {
+		method: "POST",
+		headers: {
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ username, password })
+	};
+	return fetch(LOGIN_BASE_PATH, init)
+		.then(res => res.json())
+		.then(({ id, username, token }) => ({ id, username, token }));
 };
 
 export const getUsers = () => {
-	return axios.get(USERS_BASE_PATH).then(({ data: usersList }) => usersList);
+	return fetch(USERS_BASE_PATH)
+		.then(res => res.json());
 };
 
 export const createUser = (username, password) => {
-	return axios.post(USERS_BASE_PATH, { username, password });
+	const init = {
+		method: "POST",
+		headers: {
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ username, password })
+	};
+	return fetch(USERS_BASE_PATH, init);
 };
