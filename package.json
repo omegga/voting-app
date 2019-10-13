@@ -59,12 +59,14 @@
     "webpack-merge": "^4.2.2"
   },
   "scripts": {
-    "client:dev": "webpack-dev-server --open --config webpack.dev.js",
+		"client:dev": "webpack --config webpack.dev.js",
     "client:prod": "webpack --config webpack.prod.js",
+		"client:watch": "webpack-dev-server --open --config webpack.dev.js",
     "deploy": "git push heroku master",
     "heroku-postbuild": "npm run client:prod",
-    "server:dev": "NODE_ENV=development nodemon server/index.js --exec 'eslint --fix server && node'",
-    "server:prod": "NODE_ENV=production node server/index.js",
+		"server:dev": "NODE_ENV=development node server/index.js",
+		"server:prod": "NODE_ENV=production node server/index.js",
+    "server:watch": "NODE_ENV=development nodemon server/index.js --exec 'eslint --fix server && node'",
     "start": "npm run server:prod"
   },
   "husky": {

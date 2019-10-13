@@ -5,9 +5,7 @@ const loadApp = require("./app");
 
 dotenv.config();
 
-const DB_URL = process.env.NODE_ENV === "production"
-	? process.env.DB_URL_PRODUCTION
-	: process.env.DB_URL_TEST;
+const DB_URL = process.env.DB_URL;
 
 mongoose.connect(DB_URL, 
 	{ 
