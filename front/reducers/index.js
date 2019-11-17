@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { SET_LOGGED_USER, SET_POLLS, SET_CURRENT_POLL } from "./actions";
+import { SET_LOGGED_USER, SET_POLLS, SET_POLL } from "./actions";
 
 function polls(state = [], action) {
 	switch (action.type) {
@@ -12,7 +12,7 @@ function polls(state = [], action) {
 
 function currentPoll(state = {}, action) {
 	switch(action.type) {
-	case SET_CURRENT_POLL:
+	case SET_POLL:
 		return action.payload;
 	default:
 		return state;

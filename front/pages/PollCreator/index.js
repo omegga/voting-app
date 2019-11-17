@@ -15,8 +15,9 @@ import {
 	createEmptyAnswer, 
 	createInitialAnswers, 
 	authenticateUser,
-	createPoll
+	// createPoll
 } from "../../utils";
+import { createPoll } from "../../reducers/actions";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const PollCreator = ({ loggedUser }) => {
+const PollCreator = ({ loggedUser, createPoll }) => {
 	const [step, setStep] = useState("checkLogged");
 	const [question, setQuestion] = useState("");
 	const [answers, setAnswers] = useState(createInitialAnswers);
@@ -65,9 +66,9 @@ const PollCreator = ({ loggedUser }) => {
 		setAnswers(answers.filter(a => a._id !== id));
 	}
 
-	async function handleFormSubmit(event) {
+	function handleFormSubmit(event) {
 		event.preventDefault();
-		await createPoll(loggedUser.token, { question, answers });
+		createPoll(loggedUser.token, { question, answers });
 		setQuestion("");
 		setAnswers(createInitialAnswers);
 		setStep("formSubmitted");
@@ -158,7 +159,8 @@ const PollCreator = ({ loggedUser }) => {
 	}
 };
 PollCreator.propTypes = {
-	loggedUser: PropTypes.object.isRequired
+	loggedUser: PropTypes.object.isRequired,
+	createPoll: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -167,4 +169,10 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps)(PollCreator);
+const mapDispatchToProps = dispatch => {
+	return {
+		createPoll: (token, body) => dispatch(createPoll(token, body))
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PollCreator);

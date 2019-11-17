@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography } from "@material-ui/core";
 import { Redirect, Link } from "react-router-dom";
 import TopHeader from "../../components/TopHeader";
-import { loginAndSetLoggedUser, setLoggedUser } from "../../reducers/actions";
+import { loginUser, setLoggedUser } from "../../reducers/actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-const Signin = ({ loggedUser, setLoggedUser, loginAndSetLoggedUser }) => {
+const Signin = ({ loggedUser, setLoggedUser, loginUser }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -20,7 +20,7 @@ const Signin = ({ loggedUser, setLoggedUser, loginAndSetLoggedUser }) => {
 		try {
 			setUsername("");
 			setPassword("");
-			loginAndSetLoggedUser(username, password);
+			loginUser(username, password);
 		} catch (e) {
 			setUsername("");
 			setPassword("");
@@ -81,7 +81,7 @@ const Signin = ({ loggedUser, setLoggedUser, loginAndSetLoggedUser }) => {
 Signin.propTypes = {
 	loggedUser: PropTypes.object.isRequired,
 	setLoggedUser: PropTypes.func.isRequired,
-	loginAndSetLoggedUser: PropTypes.func.isRequired
+	loginUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -92,8 +92,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
 	setLoggedUser: user => dispatch(setLoggedUser(user)),
-	loginAndSetLoggedUser: (username, password) => {
-		dispatch(loginAndSetLoggedUser(username, password));
+	loginUser: (username, password) => {
+		dispatch(loginUser(username, password));
 	}
 });
 

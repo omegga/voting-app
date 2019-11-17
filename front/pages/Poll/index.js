@@ -7,8 +7,10 @@ import PollResult from "../../components/PollResult";
 import PollVote from "../../components/PollVote";
 import TopHeader from "../../components/TopHeader";
 import TwitterShareButton from "../../components/TwitterShareButton";
-import { setCurrentPoll } from "../../reducers/actions";
-import { getPollById, addVoteOnPoll } from "../../utils";
+import { synchronizeCurrentPoll } from "../../reducers/actions";
+// import { getPollById, addVoteOnPoll } from "../../utils";
+// import { addVoteOnPoll } from "../../utils";
+import { addVote } from "../../reducers/actions";
 
 const useStyles = makeStyles(theme => ({
 	title: {
@@ -17,25 +19,28 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const Poll = ({ match, currentPoll, setCurrentPoll }) => {
+const Poll = ({ match, currentPoll, synchronizeCurrentPoll, addVote }) => {
 	const pollId = match.params.id;
 	const [userHasAnswered, setUserHasAnswered] = useState(false);
 	const [lastVote, setLastVote] = useState(Date.now());
-	const [notFound, setNotFound] = useState(false);
+	// const [notFound, setNotFound] = useState(false);
+	const [notFound] = useState(false);
 
 	useEffect(function fetchPoll() {
-		getPollById(pollId)
-			.then(poll => {
-				setCurrentPoll(poll);
-			})
-			.catch(() => {
-				setNotFound(true);
-			});
-	}, [pollId, lastVote, setCurrentPoll]);
+		synchronizeCurrentPoll(pollId);
+		// getPollById(pollId)
+		// 	.then(poll => {
+		// 		setCurrentPoll(poll);
+		// 	})
+		// 	.catch(() => {
+		// 		setNotFound(true);
+		// 	});
+	}, [pollId, lastVote, synchronizeCurrentPoll]);
 
-	async function handleFormSubmit(event, checkedAnswerId) {
+	function handleFormSubmit(event, checkedAnswerId) {
 		event.preventDefault();
-		await addVoteOnPoll(pollId, checkedAnswerId);
+		// await addVoteOnPoll(pollId, checkedAnswerId);
+		addVote(pollId, checkedAnswerId);
 		setLastVote(Date.now());
 		setUserHasAnswered(true);
 	}
@@ -87,7 +92,8 @@ const Poll = ({ match, currentPoll, setCurrentPoll }) => {
 Poll.propTypes = {
 	match: PropTypes.object,
 	currentPoll: PropTypes.object.isRequired,
-	setCurrentPoll: PropTypes.func.isRequired
+	synchronizeCurrentPoll: PropTypes.func.isRequired,
+	addVote: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -97,7 +103,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-	setCurrentPoll: poll => dispatch(setCurrentPoll(poll))
+	synchronizeCurrentPoll: poll => dispatch(synchronizeCurrentPoll(poll)),
+	addVote: (pollId, answerId) => dispatch(addVote(pollId, answerId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Poll);
